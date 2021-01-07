@@ -1,0 +1,43 @@
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "cn.ds.transaction.grpc.protocol";
+option java_outer_classname = "TxEventProto";
+
+import "GrpcCommon.proto";
+
+service TxEventService {
+  rpc OnConnected (stream GrpcServiceConfig) returns (stream GrpcCompensateCommand) {}
+  rpc OnTxEvent (GrpcTxEvent) returns (GrpcAck) {}
+  rpc OnDisconnected (GrpcServiceConfig) returns (GrpcAck) {}
+  rpc onGetServerMeta(GrpcServiceConfig) returns (ServerMeta) {}
+}
+
+message GrpcTxEvent {
+  int64 timestamp = 1;
+  string globalTxId = 2;
+  string localTxId = 3;
+  string parentTxId = 4;
+  string type = 5;
+  string compensationMethod = 6;
+  bytes payloads = 7;
+  string serviceName = 8;
+  string instanceId = 9;
+  int32 timeout = 10;
+  int32 forwardTimeout = 11;
+  int32 forwardRetries = 12;
+  int32 reverseRetries = 13;
+  int32 reverseTimeout = 14;
+  int32 retryDelayInMilliseconds = 15;
+  string retryMethod = 16;
+}
+
+message GrpcCompensateCommand {
+  string globalTxId = 1;
+  string localTxId = 2;
+  string parentTxId = 3;
+  string compensationMethod = 4;
+  bytes payloads = 5;
+}
+

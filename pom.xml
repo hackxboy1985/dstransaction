@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.ds.transaction</groupId>
+    <artifactId>dstransaction</artifactId>
+    <name>dstransaction</name>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>grpc-protocol</module>
+        <module>grpc-transaction-framework</module>
+        <module>grpc-transaction-transfer</module>
+        <module>grpc-transaction-spring-starter</module>
+        <module>demo</module>
+    </modules>
+
+    <properties>
+        <grpc.version>1.22.0</grpc.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <!-- using log4j 2.7 with Spring Boot 1.x -->
+        <log4j.version>2.7</log4j.version>
+        <disruptor.version>3.3.7</disruptor.version>
+        <dubbo.version>2.6.4</dubbo.version>
+        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+        <spring.cloud.version>2.1.1.RELEASE</spring.cloud.version>
+        <spring.cloud.starter.consul.discovery.version>2.1.1.RELEASE</spring.cloud.starter.consul.discovery.version>
+        <spring.cloud.starter.zookeeper.discovery.version>2.1.1.RELEASE</spring.cloud.starter.zookeeper.discovery.version>
+        <spring.cloud.starter.alibaba.nacos.discovery.version>0.2.2.RELEASE</spring.cloud.starter.alibaba.nacos.discovery.version>
+
+        <java.chassis.version>1.2.1</java.chassis.version>
+        <akka.version>2.5.14</akka.version>
+        <alpakka.version>1.0.5</alpakka.version>
+        <leveldbjni-all.version>1.8</leveldbjni-all.version>
+        <akka-persistence-redis.version>0.4.0</akka-persistence-redis.version>
+        <rat.version>0.12</rat.version>
+        <maven.failsafe.version>2.19.1</maven.failsafe.version>
+        <kryo.version>4.0.1</kryo.version>
+        <javax.transaction.version>1.2</javax.transaction.version>
+        <eclipse.link.version>2.7.1</eclipse.link.version>
+        <jackson.version>2.9.0</jackson.version>
+        <byteman.version>4.0.1</byteman.version>
+        <jaxb.version>2.3.0</jaxb.version>
+        <javax.activation.version>1.1.1</javax.activation.version>
+        <maven-dependency-plugin.version>3.0.2</maven-dependency-plugin.version>
+        <netty.boringssl.version>2.0.25.Final</netty.boringssl.version>
+        <netty.version>4.1.35.Final</netty.version>
+        <zookeeper.version>3.4.13</zookeeper.version>
+        <kafka.version>2.1.1</kafka.version>
+        <hystrix.version>1.5.12</hystrix.version>
+        <openfeign.version>9.5.1</openfeign.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.transaction</groupId>
+                <artifactId>javax.transaction-api</artifactId>
+                <version>${javax.transaction.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.25</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.8.10</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-protobuf</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-stub</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-netty</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-testing</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.seanyinx</groupId>
+                <artifactId>unit-scaffolding</artifactId>
+                <version>1.0.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>3.0.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.esotericsoftware</groupId>
+                <artifactId>kryo</artifactId>
+                <version>${kryo.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!-- SCB-648 Just make sure the project is 1.7 compatible -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

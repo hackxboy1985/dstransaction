@@ -1,0 +1,20 @@
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "cn.ds.transaction.grpc.protocol";
+
+// Define the common structs which could be use for TccEventService and SagaEventService
+
+message GrpcServiceConfig {
+  string serviceName = 1;
+  string instanceId = 2;
+}
+
+message GrpcAck {
+  bool aborted = 1;
+}
+
+message ServerMeta {
+  map<string, string> meta = 1;
+}
