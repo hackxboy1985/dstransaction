@@ -6,6 +6,9 @@ import cn.itweknow.sbrpccorestarter.model.RpcRequest;
 import cn.itweknow.sbrpccorestarter.model.RpcResponse;
 import cn.itweknow.sbrpccorestarter.registory.ServiceDiscovery;
 
+/**
+ * Rpc调用者，寻找服务提供者，并在调用前、后进行扩展
+ */
 public class RpcInvoker {
 
     private ServiceDiscovery serviceDiscovery;
@@ -19,17 +22,20 @@ public class RpcInvoker {
             throw new RuntimeException("RpcStarter::RpcInvoker 找不到"+request.getClassName()+"::"+request.getMethodName()+"的服务提供者:"+providerName);
         }
 
-        rpcRequestInterceptorProcessor.preIntercept(providerName,request);
+
 
         // 解析服务提供者的地址信息，数组第一个元素为ip地址，第二个元素为端口号。
         String[] addrInfo = providerInfo.getAddr().split(":");
         String host = addrInfo[0];
         int port = Integer.parseInt(addrInfo[1]);
-        RpcClient rpcClient = new RpcClient(host, port);
+
+        rpcRequestInterceptorProcessor.preIntercept(providerName,request);
+
         // 发送调用消息。
+        RpcClient rpcClient = new RpcClient(host, port);
         RpcResponse response = rpcClient.send(providerInfo,request,true);
 
-        rpcRequestInterceptorProcessor.postIntercept(providerName,request);
+        rpcRequestInterceptorProcessor.postIntercept(providerName,request,response);
         return response;
     }
 

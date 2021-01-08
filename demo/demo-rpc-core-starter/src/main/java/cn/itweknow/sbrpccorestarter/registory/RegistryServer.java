@@ -59,7 +59,7 @@ public class RegistryServer {
             // 获取zk连接
             logger.info("RpcStarter::Provider::Registry-zk: connect...");
             ZooKeeper zooKeeper = new ZooKeeper(addr, timeout, event -> {
-                logger.info("RpcStarter::Provider::ZK-Status: state={}, type={}",event.getState().name(),event.getType().name());
+                logger.info("RpcStarter::Provider::Registry-zk: receive ZK-Status: state={}, type={}",event.getState().name(),event.getType().name());
             });
             if (zooKeeper.exists(Constants.ZK_ROOT_DIR, false) == null) {
                 zooKeeper.create(Constants.ZK_ROOT_DIR, Constants.ZK_ROOT_DIR.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,
@@ -68,9 +68,9 @@ public class RegistryServer {
             zooKeeper.create(Constants.ZK_ROOT_DIR + "/" + serverName,
                     (serverName + ","+ host + ":" + port).getBytes(),
                     ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-            logger.info("RpcStarter::provider::Registry-zk: registry server success >> {} = {}", serverName, host + ":" + port);
+            logger.info("RpcStarter::Provider::Registry-zk: success >> {} = {}", serverName, host + ":" + port);
         } catch (Exception e) {
-            throw new ZkConnectException("RpcStarter::provider::Registry-zk: exception: " + e.getMessage(), e.getCause());
+            throw new ZkConnectException("RpcStarter::Provider::Registry-zk: exception: " + e.getMessage(), e.getCause());
         }
     }
 

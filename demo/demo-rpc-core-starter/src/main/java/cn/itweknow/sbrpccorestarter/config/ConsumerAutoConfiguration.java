@@ -12,8 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +26,10 @@ import java.lang.reflect.Field;
  * @description
  */
 @Configuration
-@ConditionalOnClass(RpcConsumer.class)
+//@ConditionalOnClass(RpcConsumer.class)
+@ConditionalOnProperty(value = {"spring.rpc.server-name"}, matchIfMissing = true)
+//@ConditionalOnExpression("'${spring.rpc.server-name}' == null && '${spring.rpc.server-name}'.length() == 0 ? true : false ")
+//@ConditionalOnExpression("'${spring.rpc.server-name} != null ? false : true '")//没有rpc服务名时，才认为是consumer端，才初始化
 @EnableConfigurationProperties(RpcProperties.class)
 public class ConsumerAutoConfiguration {
 

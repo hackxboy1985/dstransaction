@@ -3,18 +3,23 @@ package cn.itweknow.sbrpcprovider.service.impl;
 import cn.ds.transaction.framework.annotations.Compensable;
 import cn.itweknow.sbrpcapi.service.HelloRpcService;
 import cn.itweknow.sbrpccorestarter.anno.RpcService;
+import org.springframework.stereotype.Service;
 
 @RpcService(HelloRpcService.class)
 public class HelloRpcServiceImpl implements HelloRpcService {
 
-    @Compensable(compensationMethod="sayHiRollback")
+    public HelloRpcServiceImpl(){
+//        System.out.println("HelloRpcServiceImpl init");
+    }
+
     @Override
+    @Compensable(compensationMethod="sayHiRollback")
     public String sayHi(String msg){
         return "Hi RPC!" + msg;
     }
 
-    @Compensable(compensationMethod="sayHelloRollback")
     @Override
+    @Compensable(compensationMethod="sayHelloRollback")
     public String sayHello(String msg) {
         throw new RuntimeException("exception");
 //        return "Hello RPC!" + msg;

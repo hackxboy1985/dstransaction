@@ -172,7 +172,7 @@ public class RpcClientPool extends SimpleChannelInboundHandler<RpcResponse> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
                                 RpcResponse rpcResponse) throws Exception {
-        logger.info("RpcStarter::Consumer 获取响应 get request result,{}", rpcResponse);
+        logger.info("RpcStarter::Consumer:ReceiveResponse: get request result,{}", rpcResponse);
         this.response = rpcResponse;
         //TODO:请求有了结果，唤醒相应线程
         CompletableFuture future = requestFuture.get(ctx.channel().id());

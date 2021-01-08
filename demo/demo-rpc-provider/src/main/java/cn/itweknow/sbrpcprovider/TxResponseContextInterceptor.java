@@ -28,11 +28,11 @@ public class TxResponseContextInterceptor implements RpcInvokeInterceptor<RpcReq
         if (omegaContext != null) {
             String globalTxId = (String)request.getContext().get(GLOBAL_TX_ID_KEY);
             if (globalTxId == null) {
-                logger.debug("Cannot inject transaction ID, no such omega context global id: {}", GLOBAL_TX_ID_KEY);
+                logger.info("Cannot inject transaction ID, no such omega context global id: {}", GLOBAL_TX_ID_KEY);
             } else {
                 omegaContext.setGlobalTxId(globalTxId);
                 omegaContext.setLocalTxId((String)request.getContext().get(LOCAL_TX_ID_KEY));
-                logger.debug("Added {} {} and {} {} to omegaContext", new Object[] {GLOBAL_TX_ID_KEY, omegaContext.globalTxId(),
+                logger.info("Added {} {} and {} {} to omegaContext", new Object[] {GLOBAL_TX_ID_KEY, omegaContext.globalTxId(),
                         LOCAL_TX_ID_KEY, omegaContext.localTxId()});
             }
         } else {
@@ -44,7 +44,7 @@ public class TxResponseContextInterceptor implements RpcInvokeInterceptor<RpcReq
 
     @Override
     public RpcResponse postIntercept(String providerName, RpcRequest request) {
-        logger.info("postIntercept: context:{}",request.getContext());
+        logger.info("Response postIntercept: context:{}",request.getContext());
         return null;
     }
 }

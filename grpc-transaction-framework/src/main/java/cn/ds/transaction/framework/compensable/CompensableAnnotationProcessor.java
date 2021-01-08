@@ -6,6 +6,7 @@ import cn.ds.transaction.framework.CallbackContext;
 import cn.ds.transaction.framework.context.OmegaContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -33,6 +34,9 @@ public class CompensableAnnotationProcessor implements BeanPostProcessor {
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
     checkMethod(bean);
     checkFields(bean);
+//    if (beanName.contains("hello")) {
+//      System.out.println("beanName="+beanName);
+//    }
     return bean;
   }
 

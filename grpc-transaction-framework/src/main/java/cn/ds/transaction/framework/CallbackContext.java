@@ -32,9 +32,11 @@ public class CallbackContext {
    * @param target bean
    */
   public void addCallbackContext(String key, Method compensationMethod, Object target) {
-    //LOG.info("Saga-Transaction::compensation method register {}=",key);
+//    LOG.info("Saga-Transaction::compensation method register {}=",key);
     compensationMethod.setAccessible(true);
-    contexts.put(key, new CallbackContextInternal(target, compensationMethod));
+    if (!contexts.containsKey(key)) {
+      contexts.put(key, new CallbackContextInternal(target, compensationMethod));
+    }
   }
 
   /**

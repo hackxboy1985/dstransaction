@@ -32,6 +32,8 @@ public class ServiceDiscovery {
     public ServiceDiscovery(String registoryAddress) throws ZkConnectException {
         try {
             // 获取zk连接。
+            logger.info("RpcStarter::ServiceDiscovery: start connect zk registoryAddress:{}", registoryAddress);
+
             ZooKeeper zooKeeper = new ZooKeeper(registoryAddress, 2000, new Watcher() {
                 @Override
                 public void process(WatchedEvent event) {

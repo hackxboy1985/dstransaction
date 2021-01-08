@@ -28,7 +28,7 @@ public class TxContextInterceptor implements RpcInvokeInterceptor<RpcRequest,Rpc
             request.setContext(new HashMap());
         }
         if (omegaContext != null) {
-            request.getContext().put("testkey","value");
+            //request.getContext().put("testkey","value");
             request.getContext().put(GLOBAL_TX_ID_KEY, omegaContext.globalTxId());
             request.getContext().put(LOCAL_TX_ID_KEY, omegaContext.localTxId());
         }
@@ -36,8 +36,8 @@ public class TxContextInterceptor implements RpcInvokeInterceptor<RpcRequest,Rpc
     }
 
     @Override
-    public RpcResponse postIntercept(String providerName, RpcRequest request) {
-        logger.info("postIntercept: context:{}",request.getContext());
+    public RpcResponse postIntercept(String providerName, RpcResponse response) {
+//        logger.info("Request PostIntercept: context:{}",request.getContext());
         return null;
     }
 }

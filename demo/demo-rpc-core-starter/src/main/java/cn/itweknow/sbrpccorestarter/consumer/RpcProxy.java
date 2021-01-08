@@ -40,8 +40,7 @@ public class RpcProxy {
                     }
 //                    System.out.println("invoke proxy invoke! method=" + method);
 
-                    // 通过netty向Rpc服务发送请求。
-                    // 构建一个请求。
+                    // 构建一个请求。通过netty向Rpc服务发送请求。
                     RpcRequest request = new RpcRequest();
                     request.setRequestId(UUID.randomUUID().toString())
                             .setClassName(method.getDeclaringClass().getName())

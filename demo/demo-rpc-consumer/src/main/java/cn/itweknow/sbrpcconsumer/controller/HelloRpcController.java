@@ -29,7 +29,7 @@ public class HelloRpcController {
 
     //test throw exception
     void afterSayhi(){
-        throw new RuntimeException("test");
+//        throw new RuntimeException("test");
     }
 
     @GetMapping("/hello")

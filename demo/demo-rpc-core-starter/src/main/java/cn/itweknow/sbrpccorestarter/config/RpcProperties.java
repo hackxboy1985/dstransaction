@@ -23,7 +23,7 @@ public class RpcProperties {
     /**
      * 服务名称
      */
-    private String serverName = "rpc";
+    private String serverName = "";
 
     /**
      * 服务地址

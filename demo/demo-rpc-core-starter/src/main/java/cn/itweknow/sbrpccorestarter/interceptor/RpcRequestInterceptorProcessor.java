@@ -30,20 +30,20 @@ public class RpcRequestInterceptorProcessor  {
                 try {
                     interceptor.preIntercept(providerName, request);
                 }catch (Exception e){
-                    logger.error("preIntercept[{}] error:",interceptor.getClass(),e.getMessage(),e);
+                    logger.error("RpcStarter::Request: preIntercept[{}] error:",interceptor.getClass(),e.getMessage(),e);
                 }
             }
         }
     }
 
-    public void postIntercept(String providerName, RpcRequest request){
+    public void postIntercept(String providerName, RpcRequest request, RpcResponse response){
         if (CollectionUtils.isEmpty(rpcRequestInterceptorHolder.getInterceptorList()) == false){
             List<RpcInvokeInterceptor> interceptorList = rpcRequestInterceptorHolder.getInterceptorList();
             for (RpcInvokeInterceptor<RpcRequest,RpcResponse> interceptor : interceptorList){
                 try {
-                    interceptor.postIntercept(providerName, request);
+                    interceptor.postIntercept(providerName, response);
                 }catch (Exception e){
-                    logger.error("postIntercept[{}] error:",interceptor.getClass(),e.getMessage(),e);
+                    logger.error("RpcStarter::Request: postIntercept[{}] error:",interceptor.getClass(),e.getMessage(),e);
                 }
             }
         }

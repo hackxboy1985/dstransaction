@@ -39,7 +39,7 @@ public abstract class MethodCheckingCallback implements MethodCallback {
         String key = getTargetBean(bean).getClass().getDeclaredMethod(each, method.getParameterTypes()).toString();
         callbackContext.addCallbackContext(key, signature, bean);
 
-        LOG.info("Saga-Transaction::Found compensable method [{}] in {}", each, bean.getClass().getCanonicalName());
+//        LOG.info("Saga-Transaction::Found compensable method [{}] in {}", each, bean.getClass().getCanonicalName());
       } catch (Exception ex) {
         throw new OmegaException(
             "No such " + callbackType + " method [" + each + "] found in " + bean.getClass().getCanonicalName(), ex);
