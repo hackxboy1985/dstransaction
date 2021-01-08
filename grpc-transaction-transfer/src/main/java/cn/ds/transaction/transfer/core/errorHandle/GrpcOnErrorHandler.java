@@ -8,7 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import cn.ds.transaction.framework.interfaces.MessageSender;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 
 public class GrpcOnErrorHandler {
 
@@ -55,12 +55,12 @@ public class GrpcOnErrorHandler {
         try {
           MessageSender messageSender = reconnectedSenders.poll(timeoutSeconds, TimeUnit.SECONDS);
           if (null == messageSender) {
-            throw new OmegaException("Failed to get reconnected sender, all alpha server is down.");
+            throw new SagaException("Failed to get reconnected sender, all saga server is down.");
           }
           return messageSender;
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
-          throw new OmegaException("Failed to get reconnected sender", e);
+          throw new SagaException("Failed to get reconnected sender", e);
         }
       }
     };

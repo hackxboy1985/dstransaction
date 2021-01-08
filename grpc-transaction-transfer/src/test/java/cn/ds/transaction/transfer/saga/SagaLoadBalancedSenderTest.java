@@ -15,7 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import cn.ds.transaction.framework.context.ServiceConfig;
-import cn.ds.transaction.transfer.AlphaClusterConfig;
+import cn.ds.transaction.transfer.SagaSvrClusterConfig;
 import cn.ds.transaction.transfer.core.FastestSender;
 import cn.ds.transaction.transfer.core.LoadBalanceContext;
 import cn.ds.transaction.transfer.core.LoadBalanceContextBuilder;
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import cn.ds.transaction.framework.interfaces.MessageSender;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.TxAbortedEvent;
 import cn.ds.transaction.framework.TxEvent;
@@ -41,7 +41,7 @@ import org.mockito.Mockito;
 public class SagaLoadBalancedSenderTest extends SagaLoadBalancedSenderTestBase {
   @Override
   protected SagaLoadBalanceSender newMessageSender(String[] addresses) {
-    AlphaClusterConfig clusterConfig = AlphaClusterConfig.builder()
+    SagaSvrClusterConfig clusterConfig = SagaSvrClusterConfig.builder()
         .addresses(ImmutableList.copyOf(addresses))
         .enableSSL(false)
         .enableMutualAuth(false)
@@ -246,8 +246,8 @@ public class SagaLoadBalancedSenderTest extends SagaLoadBalancedSenderTestBase {
       public void run() {
         try {
           messageSender.send(event);
-        } catch (OmegaException ex) {
-          assertThat(ex.getMessage().endsWith("all alpha server is down."), is(true));
+        } catch (SagaException ex) {
+          assertThat(ex.getMessage().endsWith("all saga server is down."), is(true));
         }
       }
     });
@@ -302,8 +302,8 @@ public class SagaLoadBalancedSenderTest extends SagaLoadBalancedSenderTestBase {
       public void run() {
         try {
           messageSender.send(event);
-          expectFailing(OmegaException.class);
-        } catch (OmegaException e) {
+          expectFailing(SagaException.class);
+        } catch (SagaException e) {
           assertThat(e.getMessage().endsWith("interruption"), is(true));
         }
       }

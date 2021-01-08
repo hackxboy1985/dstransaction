@@ -2,8 +2,8 @@
 
 package cn.ds.transaction.framework.compensable;
 
-import cn.ds.transaction.framework.annotations.OmegaContextAware;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.annotations.SagaContextAware;
+import cn.ds.transaction.framework.context.SagaContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
@@ -23,17 +23,17 @@ import java.util.concurrent.Executor;
 class ExecutorFieldCallback implements FieldCallback {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private final OmegaContext omegaContext;
+  private final SagaContext sagaContext;
   private final Object bean;
 
-  ExecutorFieldCallback(Object bean, OmegaContext omegaContext) {
-    this.omegaContext = omegaContext;
+  ExecutorFieldCallback(Object bean, SagaContext sagaContext) {
+    this.sagaContext = sagaContext;
     this.bean = bean;
   }
 
   @Override
   public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-    if (!field.isAnnotationPresent(OmegaContextAware.class)) {
+    if (!field.isAnnotationPresent(SagaContextAware.class)) {
       return;
     }
 
@@ -44,10 +44,10 @@ class ExecutorFieldCallback implements FieldCallback {
     if (!Executor.class.isAssignableFrom(generic)) {
       throw new IllegalArgumentException(
           "Only Executor, ExecutorService, and ScheduledExecutorService are supported for @"
-              + OmegaContextAware.class.getSimpleName());
+              + SagaContextAware.class.getSimpleName());
     }
 
-    field.set(bean, ExecutorProxy.newInstance(field.get(bean), field.getType(), omegaContext));
+    field.set(bean, ExecutorProxy.newInstance(field.get(bean), field.getType(), sagaContext));
   }
 
   //TODO:线程代理:初始化时将当前线程的globalTxId及localTxId保存至RunnableProxy，
@@ -57,37 +57,37 @@ class ExecutorFieldCallback implements FieldCallback {
     private final String globalTxId;
     private final String localTxId;
     private final Object runnable;
-    private final OmegaContext omegaContext;
+    private final SagaContext sagaContext;
 
-    private static Object newInstance(Object runnable, OmegaContext omegaContext) {
-      RunnableProxy runnableProxy = new RunnableProxy(omegaContext, runnable);
+    private static Object newInstance(Object runnable, SagaContext sagaContext) {
+      RunnableProxy runnableProxy = new RunnableProxy(sagaContext, runnable);
       return Proxy.newProxyInstance(
           runnable.getClass().getClassLoader(),
           runnable.getClass().getInterfaces(),
           runnableProxy);
     }
 
-    private RunnableProxy(OmegaContext omegaContext, Object runnable) {
-      this.omegaContext = omegaContext;
-      this.globalTxId = omegaContext.globalTxId();
-      this.localTxId = omegaContext.localTxId();
+    private RunnableProxy(SagaContext sagaContext, Object runnable) {
+      this.sagaContext = sagaContext;
+      this.globalTxId = sagaContext.globalTxId();
+      this.localTxId = sagaContext.localTxId();
       this.runnable = runnable;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       try {
-        LOG.debug("Setting OmegaContext with globalTxId [{}] & localTxId [{}]",
+        LOG.debug("Setting SagaContext with globalTxId [{}] & localTxId [{}]",
             globalTxId,
             localTxId);
 
-        omegaContext.setGlobalTxId(globalTxId);
-        omegaContext.setLocalTxId(localTxId);
+        sagaContext.setGlobalTxId(globalTxId);
+        sagaContext.setLocalTxId(localTxId);
 
         return method.invoke(runnable, args);
       } finally {
-        omegaContext.clear();
-        LOG.debug("Cleared OmegaContext with globalTxId [{}] & localTxId [{}]",
+        sagaContext.clear();
+        LOG.debug("Cleared SagaContext with globalTxId [{}] & localTxId [{}]",
             globalTxId,
             localTxId);
       }
@@ -97,39 +97,39 @@ class ExecutorFieldCallback implements FieldCallback {
   //TODO:执行代理
   private static class ExecutorProxy implements InvocationHandler {
     private final Object target;
-    private final OmegaContext omegaContext;
+    private final SagaContext sagaContext;
 
-    private ExecutorProxy(Object target, OmegaContext omegaContext) {
+    private ExecutorProxy(Object target, SagaContext sagaContext) {
       this.target = target;
-      this.omegaContext = omegaContext;
+      this.sagaContext = sagaContext;
     }
 
-    private static Object newInstance(Object target, Class<?> targetClass, OmegaContext omegaContext) {
+    private static Object newInstance(Object target, Class<?> targetClass, SagaContext sagaContext) {
       Class<?>[] interfaces = targetClass.isInterface() ? new Class<?>[] {targetClass} : targetClass.getInterfaces();
 
       return Proxy.newProxyInstance(
           targetClass.getClassLoader(),
           interfaces,
-          new ExecutorProxy(target, omegaContext));
+          new ExecutorProxy(target, sagaContext));
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-      return method.invoke(target, augmentRunnablesWithOmegaContext(args));
+      return method.invoke(target, augmentRunnablesWithSagaContext(args));
     }
 
-    private Object[] augmentRunnablesWithOmegaContext(Object[] args) {
+    private Object[] augmentRunnablesWithSagaContext(Object[] args) {
       Object[] augmentedArgs = new Object[args.length];
 
       for (int i = 0; i < args.length; i++) {
         Object arg = args[i];
         if (isExecutable(arg)) {
-          augmentedArgs[i] = RunnableProxy.newInstance(arg, omegaContext);
+          augmentedArgs[i] = RunnableProxy.newInstance(arg, sagaContext);
         } else if (isCollectionOfExecutables(arg)) {
           List argList = new ArrayList();
           Collection argCollection = (Collection<?>) arg;
           for (Object a : argCollection) {
-            argList.add(RunnableProxy.newInstance(a, omegaContext));
+            argList.add(RunnableProxy.newInstance(a, sagaContext));
           }
           augmentedArgs[i] = argList;
         } else {

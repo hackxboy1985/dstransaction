@@ -28,7 +28,7 @@ public class RpcProviderHandler {
     }
 
     public RpcResponse handle(RpcRequest request) throws Exception {
-        logger.info("RpcStarter::Provider::server receive request,{}", request);
+//        logger.info("RpcStarter::Provider::server handle request,{}", request);
         // 返回的对象。将请求id原路带回
         RpcResponse rpcResponse = new RpcResponse();
         rpcResponse.setRequestId(request.getRequestId());
@@ -40,6 +40,7 @@ public class RpcProviderHandler {
             if (rpcResponseInterceptorProcessor != null)
                 rpcResponseInterceptorProcessor.postIntercept(request.getClassName(),request,rpcResponse);
         } catch (Exception e) {
+            logger.info("RpcStarter::Provider::server handle request:{} , error:{}", request,e.getMessage(),e);
             rpcResponse.setError(e);
             rpcResponse.setMsg(e.getMessage());
         } finally {

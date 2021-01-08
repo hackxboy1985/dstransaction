@@ -4,9 +4,9 @@ package cn.ds.transaction.framework.wrapper;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.annotations.SagaStart;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.processor.SagaStartAnnotationProcessor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -23,7 +23,7 @@ public class SagaStartAnnotationProcessorWrapper {
     this.sagaStartAnnotationProcessor = sagaStartAnnotationProcessor;
   }
 
-  public Object apply(ProceedingJoinPoint joinPoint, SagaStart sagaStart, OmegaContext context)
+  public Object apply(ProceedingJoinPoint joinPoint, SagaStart sagaStart, SagaContext context)
       throws Throwable {
     Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
     sagaStartAnnotationProcessor.preIntercept(sagaStart.timeout());
@@ -38,8 +38,8 @@ public class SagaStartAnnotationProcessorWrapper {
       }
       return result;
     } catch (Throwable throwable) {
-      // We don't need to handle the OmegaException here
-      if (!(throwable instanceof OmegaException)) {
+      // We don't need to handle the SagaException here
+      if (!(throwable instanceof SagaException)) {
         sagaStartAnnotationProcessor.onError(method.toString(), throwable);
         LOG.error("Transaction {} failed.", context.globalTxId());
       }

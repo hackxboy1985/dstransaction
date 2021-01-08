@@ -2,7 +2,7 @@
 
 package cn.ds.transaction.transfer;
 
-public class AlphaClusterDiscovery {
+public class SagaSvrClusterDiscovery {
 
     private DiscoveryType discoveryType = DiscoveryType.DEFAULT;;
 
@@ -62,12 +62,12 @@ public class AlphaClusterDiscovery {
             return this;
         }
 
-        public AlphaClusterDiscovery build() {
-            AlphaClusterDiscovery alphaClusterDiscovery = new AlphaClusterDiscovery();
-            alphaClusterDiscovery.setDiscoveryType(discoveryType);
-            alphaClusterDiscovery.setAddresses(addresses);
-            alphaClusterDiscovery.setDiscoveryInfo(discoveryInfo);
-            return alphaClusterDiscovery;
+        public SagaSvrClusterDiscovery build() {
+            SagaSvrClusterDiscovery sagaClusterDiscovery = new SagaSvrClusterDiscovery();
+            sagaClusterDiscovery.setDiscoveryType(discoveryType);
+            sagaClusterDiscovery.setAddresses(addresses);
+            sagaClusterDiscovery.setDiscoveryInfo(discoveryInfo);
+            return sagaClusterDiscovery;
         }
     }
 }

@@ -1,6 +1,6 @@
 package cn.itweknow.sbrpcconsumer;
 
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.itweknow.sbrpccorestarter.interceptor.RpcInvokeInterceptor;
 import cn.itweknow.sbrpccorestarter.model.RpcRequest;
 import cn.itweknow.sbrpccorestarter.model.RpcResponse;
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
-import static cn.ds.transaction.framework.context.OmegaContext.GLOBAL_TX_ID_KEY;
-import static cn.ds.transaction.framework.context.OmegaContext.LOCAL_TX_ID_KEY;
+import static cn.ds.transaction.framework.context.SagaContext.GLOBAL_TX_ID_KEY;
+import static cn.ds.transaction.framework.context.SagaContext.LOCAL_TX_ID_KEY;
 
 @Component
 public class TxContextInterceptor implements RpcInvokeInterceptor<RpcRequest,RpcResponse> {
@@ -20,17 +20,17 @@ public class TxContextInterceptor implements RpcInvokeInterceptor<RpcRequest,Rpc
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired(required=false)
-    private OmegaContext omegaContext;
+    private SagaContext sagaContext;
 
     @Override
     public RpcResponse preIntercept(String providerName, RpcRequest request) {
         if(request.getContext()==null){
             request.setContext(new HashMap());
         }
-        if (omegaContext != null) {
+        if (sagaContext != null) {
             //request.getContext().put("testkey","value");
-            request.getContext().put(GLOBAL_TX_ID_KEY, omegaContext.globalTxId());
-            request.getContext().put(LOCAL_TX_ID_KEY, omegaContext.localTxId());
+            request.getContext().put(GLOBAL_TX_ID_KEY, sagaContext.globalTxId());
+            request.getContext().put(LOCAL_TX_ID_KEY, sagaContext.localTxId());
         }
         return null;
     }

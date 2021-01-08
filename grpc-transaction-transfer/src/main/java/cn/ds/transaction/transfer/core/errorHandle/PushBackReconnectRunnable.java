@@ -33,14 +33,14 @@ public class PushBackReconnectRunnable implements Runnable {
   @Override
   public void run() {
     try {
-      LOG.info("Saga-Transaction::Reconnect:Retry connecting to alpha at {}", messageSender.target());
+      LOG.info("Saga-Transaction::Reconnect:Retry connecting to saga at {}", messageSender.target());
       messageSender.onDisconnected();
       messageSender.onConnected();
       senders.put(messageSender, 0L);
       connectedSenders.offer(messageSender);
-      LOG.info("Saga-Transaction::Reconnect:Retry connecting to alpha at {} is successful", messageSender.target());
+      LOG.info("Saga-Transaction::Reconnect:Retry connecting to saga at {} is successful", messageSender.target());
     } catch (Exception e) {
-      LOG.error("Saga-Transaction::Reconnect:Failed to reconnect to alpha at {}", messageSender.target(), e);
+      LOG.error("Saga-Transaction::Reconnect:Failed to reconnect to saga at {}", messageSender.target(), e);
       pendingTasks.offer(this);
     }
   }

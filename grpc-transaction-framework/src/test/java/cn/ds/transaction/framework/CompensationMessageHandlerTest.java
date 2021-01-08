@@ -16,9 +16,9 @@ import java.util.List;
 
 import cn.ds.transaction.framework.enums.EventType;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
-import cn.ds.transaction.framework.context.AlphaMetas;
+import cn.ds.transaction.framework.context.SagaServerMetas;
 import cn.ds.transaction.framework.context.IdGenerator;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.context.UniqueIdGenerator;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.messageHandlerImpl.CompensationMessageHandler;
@@ -54,9 +54,9 @@ public class CompensationMessageHandlerTest {
       return "UNKNOWN"; }
 
     @Override
-    public AlphaResponse send(TxEvent event) {
+    public SagaSvrResponse send(TxEvent event) {
       events.add(event);
-      return new AlphaResponse(false);
+      return new SagaSvrResponse(false);
     }
   };
 
@@ -77,8 +77,8 @@ public class CompensationMessageHandlerTest {
     final CallbackContext context = mock(CallbackContext.class);
     final CompensationMessageHandler handler = new CompensationMessageHandler(sender, context);
     IdGenerator<String> idGenerator = new UniqueIdGenerator();
-    OmegaContext omegaContext = new OmegaContext(idGenerator,AlphaMetas.builder().akkaEnabled(false).build());
-    when(context.getOmegaContext()).thenReturn(omegaContext);
+    SagaContext sagaContext = new SagaContext(idGenerator, SagaServerMetas.builder().akkaEnabled(false).build());
+    when(context.getSagaContext()).thenReturn(sagaContext);
     handler.onReceive(globalTxId, localTxId, parentTxId, compensationMethod, payload);
     assertThat(events.size(), is(1));
     TxEvent event = events.get(0);
@@ -94,8 +94,8 @@ public class CompensationMessageHandlerTest {
   @Test
   public void sendsCompensateAckSucceedEventOnCompensationCompletedWithFSM() throws NoSuchMethodException {
     IdGenerator<String> idGenerator = new UniqueIdGenerator();
-    OmegaContext omegaContext = new OmegaContext(idGenerator,AlphaMetas.builder().akkaEnabled(true).build());
-    CallbackContext context = new CallbackContext(omegaContext, sender);
+    SagaContext sagaContext = new SagaContext(idGenerator, SagaServerMetas.builder().akkaEnabled(true).build());
+    CallbackContext context = new CallbackContext(sagaContext, sender);
     Method mockMethod = this.getClass().getMethod("mockCompensationSucceedMethod",String.class);
     context.addCallbackContext(compensationMethod, mockMethod, this);
     CompensationMessageHandler handler = new CompensationMessageHandler(sender, context);
@@ -113,8 +113,8 @@ public class CompensationMessageHandlerTest {
   @Test
   public void sendsCompensateAckFailedEventOnCompensationFailedWithFSM() throws NoSuchMethodException {
     IdGenerator<String> idGenerator = new UniqueIdGenerator();
-    OmegaContext omegaContext = new OmegaContext(idGenerator,AlphaMetas.builder().akkaEnabled(true).build());
-    CallbackContext context = new CallbackContext(omegaContext, sender);
+    SagaContext sagaContext = new SagaContext(idGenerator, SagaServerMetas.builder().akkaEnabled(true).build());
+    CallbackContext context = new CallbackContext(sagaContext, sender);
     Method mockMethod = this.getClass().getMethod("mockCompensationFailedMethod",String.class);
     context.addCallbackContext(compensationMethod, mockMethod, this);
     CompensationMessageHandler handler = new CompensationMessageHandler(sender, context);

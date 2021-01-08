@@ -6,9 +6,9 @@ import java.lang.reflect.Method;
 
 import javax.transaction.InvalidTransactionException;
 
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.interceptor.CompensableInterceptor;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.annotations.Compensable;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -26,7 +26,7 @@ public class ForwardRecovery extends DefaultRecovery {
   // TODO: 2018/03/10 we do not support retry with forward timeout yet
   @Override
   public Object applyTo(ProceedingJoinPoint joinPoint, Compensable compensable, CompensableInterceptor interceptor,
-      OmegaContext context, String parentTxId, int forwardRetries) throws Throwable {
+                        SagaContext context, String parentTxId, int forwardRetries) throws Throwable {
     Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
     int remains = forwardRetries;
     try {
@@ -56,7 +56,7 @@ public class ForwardRecovery extends DefaultRecovery {
           + ", local tx id: " + context.localTxId() + ", method: " + method.toString();
       LOG.error(errorMessage);
       interceptor.onError(parentTxId, compensationMethodSignature(joinPoint, compensable, method), e);
-      throw new OmegaException(errorMessage);
+      throw new SagaException(errorMessage);
     }
   }
 }

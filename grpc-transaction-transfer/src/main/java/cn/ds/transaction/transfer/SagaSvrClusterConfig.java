@@ -9,7 +9,7 @@ import cn.ds.transaction.framework.interfaces.MessageSerializer;
 import java.util.Collections;
 import java.util.List;
 
-public class AlphaClusterConfig {
+public class SagaSvrClusterConfig {
 
   private List<String> addresses;
 
@@ -34,12 +34,12 @@ public class AlphaClusterConfig {
    * @deprecated Use {@link Builder} instead.
    */
   @Deprecated
-  public AlphaClusterConfig(List<String> addresses,
-      boolean enableSSL,
-      boolean enableMutualAuth,
-      String cert,
-      String key,
-      String certChain) {
+  public SagaSvrClusterConfig(List<String> addresses,
+                              boolean enableSSL,
+                              boolean enableMutualAuth,
+                              String cert,
+                              String key,
+                              String certChain) {
     this.addresses = addresses == null ? Collections.<String>emptyList() : addresses;
     this.enableMutualAuth = enableMutualAuth;
     this.enableSSL = enableSSL;
@@ -48,13 +48,13 @@ public class AlphaClusterConfig {
     this.certChain = certChain;
   }
 
-  private AlphaClusterConfig(List<String> addresses,
-      boolean enableSSL,
-      boolean enableMutualAuth,
-      String cert, String key, String certChain,
-      MessageSerializer messageSerializer,
-      MessageDeserializer messageDeserializer,
-      MessageHandler messageHandler) {
+  private SagaSvrClusterConfig(List<String> addresses,
+                               boolean enableSSL,
+                               boolean enableMutualAuth,
+                               String cert, String key, String certChain,
+                               MessageSerializer messageSerializer,
+                               MessageDeserializer messageDeserializer,
+                               MessageHandler messageHandler) {
     this.addresses = addresses;
     this.enableSSL = enableSSL;
     this.enableMutualAuth = enableMutualAuth;
@@ -129,8 +129,8 @@ public class AlphaClusterConfig {
 
 
 
-    public AlphaClusterConfig build() {
-      return new AlphaClusterConfig(this.addresses,
+    public SagaSvrClusterConfig build() {
+      return new SagaSvrClusterConfig(this.addresses,
           this.enableSSL,
           this.enableMutualAuth,
           this.cert,

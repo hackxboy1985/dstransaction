@@ -45,8 +45,6 @@ public class RpcClientPool extends SimpleChannelInboundHandler<RpcResponse> {
         return rpcClientPool;
     }
 
-//    private String host;
-//    private int port;
 
     EventLoopGroup workerGroup;
     Bootstrap bootstrap;
@@ -131,7 +129,6 @@ public class RpcClientPool extends SimpleChannelInboundHandler<RpcResponse> {
             Channel channel = channelGroup.find(channelId);
             channel.writeAndFlush(request).sync();
             CompletableFuture future = new CompletableFuture<>();
-//            CONTEXT_HOLDER.set(future);
             requestFuture.put(channelId,future);
             //TODO:线程阻塞住，等待结果
             future.get();

@@ -2,6 +2,6 @@
 
 package cn.ds.transaction.framework.common;
 
-public enum AlphaMetaKeys {
+public enum SagaServerMetaKeys {
   AkkaEnabled // TODO Future expansion to SupportSaga, SupportTcc
 }

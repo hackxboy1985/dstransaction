@@ -2,11 +2,11 @@
 
 package cn.ds.transaction.framework.aspect;
 
-import cn.ds.transaction.framework.AlphaResponse;
+import cn.ds.transaction.framework.SagaSvrResponse;
 import cn.ds.transaction.framework.TxEvent;
 import cn.ds.transaction.framework.annotations.SagaEnd;
 import cn.ds.transaction.framework.context.IdGenerator;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.enums.EventType;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
@@ -55,9 +55,9 @@ public class SagaEndAspectTest {
     }
 
     @Override
-    public AlphaResponse send(TxEvent event) {
+    public SagaSvrResponse send(TxEvent event) {
       messages.add(event);
-      return new AlphaResponse(false);
+      return new SagaSvrResponse(false);
     }
   };
   private final ProceedingJoinPoint joinPoint = Mockito.mock(ProceedingJoinPoint.class);
@@ -67,20 +67,20 @@ public class SagaEndAspectTest {
   private final IdGenerator<String> idGenerator = Mockito.mock(IdGenerator.class);
   private final SagaEnd sagaEnd = Mockito.mock(SagaEnd.class);
 
-  private final OmegaContext omegaContext = Mockito.mock(OmegaContext.class);
+  private final SagaContext sagaContext = Mockito.mock(SagaContext.class);
   private SagaEndAspect aspect;
 
   @Before
   public void setUp() throws Exception {
-    when(omegaContext.globalTxId()).thenReturn(globalTxId);
-    when(omegaContext.localTxId()).thenReturn(globalTxId);
+    when(sagaContext.globalTxId()).thenReturn(globalTxId);
+    when(sagaContext.localTxId()).thenReturn(globalTxId);
     when(joinPoint.getSignature()).thenReturn(methodSignature);
     when(methodSignature.getMethod()).thenReturn(this.getClass().getDeclaredMethod("doNothing"));
   }
 
   @Test
   public void sagaEndWithoutError() throws Throwable {
-    aspect = new SagaEndAspect(sender, omegaContext);
+    aspect = new SagaEndAspect(sender, sagaContext);
     aspect.advise(joinPoint, sagaEnd);
     assertThat(messages.size(), is(1));
     TxEvent endedEvent = messages.get(0);
@@ -90,7 +90,7 @@ public class SagaEndAspectTest {
     assertThat(endedEvent.parentTxId(), is(nullValue()));
     assertThat(endedEvent.type(), is(EventType.SagaEndedEvent));
 
-    verify(omegaContext).clear();
+    verify(sagaContext).clear();
   }
 
 
@@ -98,7 +98,7 @@ public class SagaEndAspectTest {
   @Test
   public void sagaEndWithErrors() throws Throwable {
 
-    aspect = new SagaEndAspect(sender, omegaContext);
+    aspect = new SagaEndAspect(sender, sagaContext);
     RuntimeException oops = new RuntimeException("oops");
 
     when(joinPoint.proceed()).thenThrow(oops);
@@ -118,7 +118,7 @@ public class SagaEndAspectTest {
     assertThat(event.parentTxId(), is(nullValue()));
     assertThat(event.type(), is(EventType.SagaAbortedEvent));
 
-    verify(omegaContext).clear();
+    verify(sagaContext).clear();
   }
 
 

@@ -5,11 +5,11 @@ package cn.ds.transaction.framework.aspect;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.context.TransactionContext;
 import cn.ds.transaction.framework.annotations.Compensable;
 import cn.ds.transaction.framework.contextHelper.TransactionContextHelper;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.interceptor.CompensableInterceptor;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.recovery.RecoveryPolicy;
@@ -28,11 +28,11 @@ public class TransactionAspect extends TransactionContextHelper {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private final OmegaContext context;
+  private final SagaContext context;
 
   private final CompensableInterceptor interceptor;
 
-  public TransactionAspect(SagaMessageSender sender, OmegaContext context) {
+  public TransactionAspect(SagaMessageSender sender, SagaContext context) {
     this.context = context;
     this.context.verify();
     this.interceptor = new CompensableInterceptor(context, sender);
@@ -43,11 +43,11 @@ public class TransactionAspect extends TransactionContextHelper {
     // just check if we need to setup the transaction context information first
     TransactionContext transactionContext = extractTransactionContext(joinPoint.getArgs());
     if (transactionContext != null) {
-      populateOmegaContext(context, transactionContext);
+      populateSagaContext(context, transactionContext);
     }
     // SCB-1011 Need to check if the globalTxId transaction is null to avoid the message sending failure
     if (context.globalTxId() == null) {
-      throw new OmegaException("Cannot find the globalTxId from OmegaContext. Please using @SagaStart to start a global transaction.");
+      throw new SagaException("Cannot find the globalTxId from SagaContext. Please using @SagaStart to start a global transaction.");
     }
     String localTxId = context.localTxId();
     context.newLocalTxId();

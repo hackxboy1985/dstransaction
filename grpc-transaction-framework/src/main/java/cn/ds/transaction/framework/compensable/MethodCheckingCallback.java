@@ -3,7 +3,7 @@
 package cn.ds.transaction.framework.compensable;
 
 import cn.ds.transaction.framework.CallbackContext;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AdvisedSupport;
@@ -41,7 +41,7 @@ public abstract class MethodCheckingCallback implements MethodCallback {
 
 //        LOG.info("Saga-Transaction::Found compensable method [{}] in {}", each, bean.getClass().getCanonicalName());
       } catch (Exception ex) {
-        throw new OmegaException(
+        throw new SagaException(
             "No such " + callbackType + " method [" + each + "] found in " + bean.getClass().getCanonicalName(), ex);
       }
     }

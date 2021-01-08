@@ -2,9 +2,9 @@
 package cn.ds.transaction.framework.context;
 
 /**
- * OmegaContext holds the globalTxId and localTxId which are used to build the invocation map
+ * SagaContext holds the globalTxId and localTxId which are used to build the invocation map
  */
-public class OmegaContext {
+public class SagaContext {
   public static final String GLOBAL_TX_ID_KEY = "X-Pack-Global-Transaction-Id";
   public static final String LOCAL_TX_ID_KEY = "X-Pack-Local-Transaction-Id";
 
@@ -12,15 +12,15 @@ public class OmegaContext {
   private final ThreadLocal<String> localTxId = new InheritableThreadLocal();
   private final IdGenerator<String> idGenerator;
 
-  private final AlphaMetas alphaMetas;
+  private final SagaServerMetas sagaServerMetas;
 
-  public OmegaContext(IdGenerator<String> idGenerator) {
-    this(idGenerator, AlphaMetas.builder().akkaEnabled(false).build());
+  public SagaContext(IdGenerator<String> idGenerator) {
+    this(idGenerator, SagaServerMetas.builder().akkaEnabled(false).build());
   }
 
-  public OmegaContext(IdGenerator<String> idGenerator, AlphaMetas alphaMetas) {
+  public SagaContext(IdGenerator<String> idGenerator, SagaServerMetas sagaServerMetas) {
     this.idGenerator = idGenerator;
-    this.alphaMetas = alphaMetas;
+    this.sagaServerMetas = sagaServerMetas;
   }
 
   public String newGlobalTxId() {
@@ -51,8 +51,8 @@ public class OmegaContext {
     return localTxId.get();
   }
 
-  public AlphaMetas getAlphaMetas() {
-    return alphaMetas;
+  public SagaServerMetas getSagaServerMetas() {
+    return sagaServerMetas;
   }
 
   public TransactionContext getTransactionContext() {
@@ -66,16 +66,16 @@ public class OmegaContext {
 
   @Override
   public String toString() {
-    return "OmegaContext{" +
+    return "SagaContext{" +
         "globalTxId=" + globalTxId.get() +
         ", localTxId=" + localTxId.get() +
-        ", " + alphaMetas +
+        ", " + sagaServerMetas +
         '}';
   }
 
   public void verify(){
     if(this.globalTxId == null){
-      throw new RuntimeException("OmegaContext globalTxId is empty, Please check if you setup the pack transport handler rightly");
+      throw new RuntimeException("SagaContext globalTxId is empty, Please check if you setup the pack transport handler rightly");
     }
   }
 }

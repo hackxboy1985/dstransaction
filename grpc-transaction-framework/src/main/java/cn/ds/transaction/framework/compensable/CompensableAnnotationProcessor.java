@@ -3,25 +3,24 @@
 package cn.ds.transaction.framework.compensable;
 
 import cn.ds.transaction.framework.CallbackContext;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * 可补偿注解方法增强及OmegaContextAware注解增强：
+ * 可补偿注解方法增强及SagaContextAware注解增强：
  * 1、将所有事务方法与补偿方法绑定
- * 2、将OmegaContextAware注解的对象支持异步线程执行时仍然可获得globalTxId及localTxId
+ * 2、将SagaContextAware注解的对象支持异步线程执行时仍然可获得globalTxId及localTxId
  */
 public class CompensableAnnotationProcessor implements BeanPostProcessor {
 
-  private final OmegaContext omegaContext;
+  private final SagaContext sagaContext;
 
   private final CallbackContext compensationContext;
 
-  public CompensableAnnotationProcessor(OmegaContext omegaContext, CallbackContext compensationContext) {
-    this.omegaContext = omegaContext;
+  public CompensableAnnotationProcessor(SagaContext sagaContext, CallbackContext compensationContext) {
+    this.sagaContext = sagaContext;
     this.compensationContext = compensationContext;
   }
 
@@ -47,6 +46,6 @@ public class CompensableAnnotationProcessor implements BeanPostProcessor {
   }
 
   private void checkFields(Object bean) {
-    ReflectionUtils.doWithFields(bean.getClass(), new ExecutorFieldCallback(bean, omegaContext));
+    ReflectionUtils.doWithFields(bean.getClass(), new ExecutorFieldCallback(bean, sagaContext));
   }
 }

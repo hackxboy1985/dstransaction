@@ -2,7 +2,7 @@
 
 package cn.ds.transaction.framework.messageFormat;
 
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.interfaces.MessageFormat;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
@@ -48,7 +48,7 @@ public class KryoMessageFormat implements MessageFormat {
 
       return objects;
     } catch (KryoException e) {
-      throw new OmegaException("Unable to deserialize message", e);
+      throw new SagaException("Unable to deserialize message", e);
     }
   }
 }

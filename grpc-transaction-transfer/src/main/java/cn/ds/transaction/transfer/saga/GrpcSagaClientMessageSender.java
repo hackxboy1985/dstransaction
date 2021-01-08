@@ -7,7 +7,7 @@ import cn.ds.transaction.grpc.protocol.*;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import cn.ds.transaction.transfer.core.LoadBalanceContext;
-import cn.ds.transaction.framework.AlphaResponse;
+import cn.ds.transaction.framework.SagaSvrResponse;
 import cn.ds.transaction.framework.interfaces.MessageDeserializer;
 import cn.ds.transaction.framework.interfaces.MessageHandler;
 import cn.ds.transaction.framework.interfaces.MessageSerializer;
@@ -90,10 +90,10 @@ public class GrpcSagaClientMessageSender implements SagaMessageSender {
   }
 
   @Override
-  public AlphaResponse send(TxEvent event) {
-    LOG.info("Saga-Transaction::Send {} to saga svr:{}", event.type().name(),event);
+  public SagaSvrResponse send(TxEvent event) {
+    LOG.info("Saga-Transaction::Send {} to saga server:{}", event.type().name(),event);
     GrpcAck grpcAck = blockingEventService.onTxEvent(convertEvent(event));
-    return new AlphaResponse(grpcAck.getAborted());
+    return new SagaSvrResponse(grpcAck.getAborted());
   }
 
   private GrpcTxEvent convertEvent(TxEvent event) {

@@ -2,14 +2,14 @@
 
 package cn.ds.transaction.framework.aspect;
 
-import cn.ds.transaction.framework.AlphaResponse;
+import cn.ds.transaction.framework.SagaSvrResponse;
 import cn.ds.transaction.framework.TxEvent;
 import cn.ds.transaction.framework.annotations.Compensable;
 import cn.ds.transaction.framework.context.IdGenerator;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.context.TransactionContextProperties;
 import cn.ds.transaction.framework.enums.EventType;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.exception.TransactionTimeoutException;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
@@ -72,9 +72,9 @@ public class TransactionAspectTest {
     }
 
     @Override
-    public AlphaResponse send(TxEvent event) {
+    public SagaSvrResponse send(TxEvent event) {
       messages.add(event);
-      return new AlphaResponse(false);
+      return new SagaSvrResponse(false);
     }
   };
   private final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
@@ -84,8 +84,8 @@ public class TransactionAspectTest {
   private final IdGenerator<String> idGenerator = mock(IdGenerator.class);
   private final Compensable compensable = mock(Compensable.class);
 
-  private final OmegaContext omegaContext = new OmegaContext(idGenerator);
-  private final TransactionAspect aspect = new TransactionAspect(sender, omegaContext);
+  private final SagaContext sagaContext = new SagaContext(idGenerator);
+  private final TransactionAspect aspect = new TransactionAspect(sender, sagaContext);
 
   private final TransactionContextProperties transactionContextProperties = mock(TransactionContextProperties.class);
 
@@ -99,8 +99,8 @@ public class TransactionAspectTest {
     when(compensable.compensationMethod()).thenReturn("doNothing");
     when(compensable.forwardRetries()).thenReturn(0);
 
-    omegaContext.setGlobalTxId(globalTxId);
-    omegaContext.setLocalTxId(localTxId);
+    sagaContext.setGlobalTxId(globalTxId);
+    sagaContext.setLocalTxId(localTxId);
 
     when(transactionContextProperties.getGlobalTxId()).thenReturn(transactionGlobalTxId);
     when(transactionContextProperties.getLocalTxId()).thenReturn(transactionLocalTxId);
@@ -128,18 +128,18 @@ public class TransactionAspectTest {
     assertThat(endedEvent.parentTxId(), is(transactionLocalTxId));
     assertThat(endedEvent.type(), is(EventType.TxEndedEvent));
 
-    assertThat(omegaContext.globalTxId(), is(transactionGlobalTxId));
-    assertThat(omegaContext.localTxId(), is(transactionLocalTxId));
+    assertThat(sagaContext.globalTxId(), is(transactionGlobalTxId));
+    assertThat(sagaContext.localTxId(), is(transactionLocalTxId));
   }
 
   @Test
   public void globalTxIsNotSet() throws Throwable {
-    omegaContext.setGlobalTxId(null);
+    sagaContext.setGlobalTxId(null);
     try {
       aspect.advise(joinPoint, compensable);
       fail("Expect exception here");
-    } catch (OmegaException ex) {
-      assertThat(ex.getMessage(), is("Cannot find the globalTxId from OmegaContext. Please using @SagaStart to start a global transaction."));
+    } catch (SagaException ex) {
+      assertThat(ex.getMessage(), is("Cannot find the globalTxId from sagaContext. Please using @SagaStart to start a global transaction."));
     }
   }
 
@@ -163,8 +163,8 @@ public class TransactionAspectTest {
     assertThat(endedEvent.parentTxId(), is(localTxId));
     assertThat(endedEvent.type(), is(EventType.TxEndedEvent));
 
-    assertThat(omegaContext.globalTxId(), is(globalTxId));
-    assertThat(omegaContext.localTxId(), is(localTxId));
+    assertThat(sagaContext.globalTxId(), is(globalTxId));
+    assertThat(sagaContext.localTxId(), is(localTxId));
   }
 
   @Test
@@ -187,8 +187,8 @@ public class TransactionAspectTest {
     assertThat(event.parentTxId(), is(localTxId));
     assertThat(event.type(), is(EventType.TxAbortedEvent));
 
-    assertThat(omegaContext.globalTxId(), is(globalTxId));
-    assertThat(omegaContext.localTxId(), is(localTxId));
+    assertThat(sagaContext.globalTxId(), is(globalTxId));
+    assertThat(sagaContext.localTxId(), is(localTxId));
   }
 
   @Test
@@ -290,7 +290,7 @@ public class TransactionAspectTest {
     try {
       aspect.advise(joinPoint, compensable);
     } catch (RuntimeException e) {
-      assertThat(e, instanceOf(OmegaException.class));
+      assertThat(e, instanceOf(SagaException.class));
     }
   }
 
@@ -341,8 +341,8 @@ public class TransactionAspectTest {
     // TxAbortedEvent
     assertThat(messages.get(3).type(), is(EventType.TxAbortedEvent));
 
-    assertThat(omegaContext.globalTxId(), is(globalTxId));
-    assertThat(omegaContext.localTxId(), is(localTxId));
+    assertThat(sagaContext.globalTxId(), is(globalTxId));
+    assertThat(sagaContext.localTxId(), is(localTxId));
   }
 
   private String doNothing() {

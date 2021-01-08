@@ -2,7 +2,7 @@
 
 package cn.ds.transaction.framework.contextHelper;
 
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.context.TransactionContext;
 import cn.ds.transaction.framework.context.TransactionContextProperties;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public abstract class TransactionContextHelper {
     return null;
   }
 
-  public void populateOmegaContext(OmegaContext context, TransactionContext transactionContext) {
+  public void populateSagaContext(SagaContext context, TransactionContext transactionContext) {
     if (context.globalTxId() != null) {
       getLogger()
           .warn("The context {}'s globalTxId is not empty. Update it for globalTxId:{} and localTxId:{}", context,

@@ -5,20 +5,20 @@ package cn.ds.transaction.framework.processor;
 import javax.transaction.TransactionalException;
 
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.*;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 
 /**
  * saga注解开始处理器
  */
 public class SagaStartAnnotationProcessor {
 
-  private final OmegaContext omegaContext;
+  private final SagaContext sagaContext;
   private final SagaMessageSender sender;
 
-  public SagaStartAnnotationProcessor(OmegaContext omegaContext, SagaMessageSender sender) {
-    this.omegaContext = omegaContext;
+  public SagaStartAnnotationProcessor(SagaContext sagaContext, SagaMessageSender sender) {
+    this.sagaContext = sagaContext;
     this.sender = sender;
   }
 
@@ -27,33 +27,33 @@ public class SagaStartAnnotationProcessor {
    * @param timeout
    * @return
    */
-  public AlphaResponse preIntercept(int timeout) {
+  public SagaSvrResponse preIntercept(int timeout) {
     try {
       return sender
-          .send(new SagaStartedEvent(omegaContext.globalTxId(), omegaContext.localTxId(), timeout));
-    } catch (OmegaException e) {
+          .send(new SagaStartedEvent(sagaContext.globalTxId(), sagaContext.localTxId(), timeout));
+    } catch (SagaException e) {
       throw new TransactionalException(e.getMessage(), e.getCause());
     }
   }
 
   public void postIntercept(String parentTxId) {
-    AlphaResponse response = sender
-        .send(new SagaEndedEvent(omegaContext.globalTxId(), omegaContext.localTxId()));
-    //TODO we may know if the transaction is aborted from fsm alpha backend
+    SagaSvrResponse response = sender
+        .send(new SagaEndedEvent(sagaContext.globalTxId(), sagaContext.localTxId()));
+    //TODO we may know if the transaction is aborted from fsm SagaSvr backend
     if (response.aborted()) {
-      throw new OmegaException("transaction " + parentTxId + " is aborted");
+      throw new SagaException("transaction " + parentTxId + " is aborted");
     }
   }
 
   public void onError(String compensationMethod, Throwable throwable) {
-    String globalTxId = omegaContext.globalTxId();
-    if(omegaContext.getAlphaMetas().isAkkaEnabled()){
+    String globalTxId = sagaContext.globalTxId();
+    if(sagaContext.getSagaServerMetas().isAkkaEnabled()){
       sender.send(
-          new SagaAbortedEvent(globalTxId, omegaContext.localTxId(), null, compensationMethod,
+          new SagaAbortedEvent(globalTxId, sagaContext.localTxId(), null, compensationMethod,
               throwable));
     }else{
       sender.send(
-          new TxAbortedEvent(globalTxId, omegaContext.localTxId(), null, compensationMethod,
+          new TxAbortedEvent(globalTxId, sagaContext.localTxId(), null, compensationMethod,
               throwable));
     }
   }

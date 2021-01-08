@@ -23,12 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.net.ssl.SSLException;
 
 import cn.ds.transaction.transfer.saga.GrpcSagaClientMessageSender;
-import cn.ds.transaction.transfer.AlphaClusterConfig;
+import cn.ds.transaction.transfer.SagaSvrClusterConfig;
 import cn.ds.transaction.framework.interfaces.MessageSender;
 
 public class LoadBalanceContextBuilder {
 
-  private final AlphaClusterConfig clusterConfig;
+  private final SagaSvrClusterConfig clusterConfig;
 
   private final ServiceConfig serviceConfig;
 
@@ -39,7 +39,7 @@ public class LoadBalanceContextBuilder {
   private final TransactionType transactionType;
 
   public LoadBalanceContextBuilder(TransactionType transactionType,
-      AlphaClusterConfig clusterConfig, ServiceConfig serviceConfig, int reconnectDelay, int timeoutSeconds) {
+                                   SagaSvrClusterConfig clusterConfig, ServiceConfig serviceConfig, int reconnectDelay, int timeoutSeconds) {
     this.transactionType = transactionType;
     this.clusterConfig = clusterConfig;
     this.serviceConfig = serviceConfig;
@@ -80,7 +80,7 @@ public class LoadBalanceContextBuilder {
   }
 
   private MessageSender buildSender(
-      String address, ManagedChannel channel, AlphaClusterConfig clusterConfig,
+      String address, ManagedChannel channel, SagaSvrClusterConfig clusterConfig,
       ServiceConfig serviceConfig, LoadBalanceContext loadContext) {
     switch (transactionType) {
       case TCC:
@@ -100,7 +100,7 @@ public class LoadBalanceContextBuilder {
       return null;
   }
 
-  private Optional<SslContext> buildSslContext(AlphaClusterConfig clusterConfig) {
+  private Optional<SslContext> buildSslContext(SagaSvrClusterConfig clusterConfig) {
     if (!clusterConfig.isEnableSSL()) {
       return Optional.absent();
     }

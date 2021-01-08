@@ -8,9 +8,9 @@ import cn.ds.transaction.grpc.protocol.ServerMeta;
 import com.google.common.base.Optional;
 import io.grpc.ManagedChannel;
 import java.lang.invoke.MethodHandles;
-import cn.ds.transaction.framework.AlphaResponse;
+import cn.ds.transaction.framework.SagaSvrResponse;
 import cn.ds.transaction.framework.interfaces.MessageSender;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +35,13 @@ public abstract class LoadBalanceSenderAdapter implements MessageSender {
         loadContext.getGrpcOnErrorHandler().getGrpcRetryContext().getDefaultMessageSender());
   }
 
-  public <T> Optional<AlphaResponse> doGrpcSend(MessageSender messageSender, T event, SenderExecutor<T> executor) {
-    AlphaResponse response = null;
+  public <T> Optional<SagaSvrResponse> doGrpcSend(MessageSender messageSender, T event, SenderExecutor<T> executor) {
+    SagaSvrResponse response = null;
     try {
       long startTime = System.nanoTime();
       response = executor.apply(event);
       loadContext.getSenders().put(messageSender, System.nanoTime() - startTime);
-    } catch (OmegaException e) {
+    } catch (SagaException e) {
       throw e;
     } catch (Exception e) {
       LOG.error("Saga-Transaction::Retry sending event {} due to failure", event, e);
@@ -50,15 +50,15 @@ public abstract class LoadBalanceSenderAdapter implements MessageSender {
     return Optional.fromNullable(response);
   }
 
-  public Optional<AlphaResponse> doGrpcSend2(TxEvent event) {
+  public Optional<SagaSvrResponse> doGrpcSend2(TxEvent event) {
     final SagaMessageSender messageSender = pickMessageSender();
 
-    AlphaResponse response = null;
+    SagaSvrResponse response = null;
     try {
       long startTime = System.nanoTime();
       response =  messageSender.send(event);
       loadContext.getSenders().put(messageSender, System.nanoTime() - startTime);
-    } catch (OmegaException e) {
+    } catch (SagaException e) {
       throw e;
     } catch (Exception e) {
       LOG.error("Saga-Transaction::Retry sending event {} due to failure", event, e);
@@ -73,7 +73,7 @@ public abstract class LoadBalanceSenderAdapter implements MessageSender {
       try {
         sender.onConnected();
       } catch (Exception e) {
-        LOG.error("Saga-Transaction::Failed connecting to alpha at {}", sender.target(), e);
+        LOG.error("Saga-Transaction::Failed connecting to SagaSvr at {}", sender.target(), e);
       }
     }
   }
@@ -84,7 +84,7 @@ public abstract class LoadBalanceSenderAdapter implements MessageSender {
       try {
         sender.onDisconnected();
       } catch (Exception e) {
-        LOG.error("Saga-Transaction::Failed disconnecting from alpha at {}", sender.target(), e);
+        LOG.error("Saga-Transaction::Failed disconnecting from SagaSvr at {}", sender.target(), e);
       }
     }
   }
@@ -97,19 +97,19 @@ public abstract class LoadBalanceSenderAdapter implements MessageSender {
       try {
         if (serverMeta == null) {
           serverMeta = sender.onGetServerMeta();
-          LOG.info("Saga-Transaction::Alpha configuration is " + serverMeta.getMetaMap());
+          LOG.info("Saga-Transaction::SagaSvr configuration is " + serverMeta.getMetaMap());
         } else {
           ServerMeta otherServerMeta = sender.onGetServerMeta();
           if (!serverMeta.getMetaMap().equals(otherServerMeta.getMetaMap())) {
             metaConsistency = false;
-            LOG.warn("Saga-Transaction::Alpha configuration is " + otherServerMeta.getMetaMap());
+            LOG.warn("Saga-Transaction::SagaSvr configuration is " + otherServerMeta.getMetaMap());
           }
         }
         if (!metaConsistency) {
-          throw new Exception("Using different Alpha configuration with multiple Alpha");
+          throw new Exception("Using different SagaSvr configuration with multiple SagaSvr");
         }
       } catch (Exception e) {
-        LOG.error("Saga-Transaction::Failed disconnecting from alpha at {}", sender.target(), e);
+        LOG.error("Saga-Transaction::Failed disconnecting from SagaSvr at {}", sender.target(), e);
       }
     }
     return serverMeta;

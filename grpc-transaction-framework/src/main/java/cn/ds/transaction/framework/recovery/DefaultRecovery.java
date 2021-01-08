@@ -1,9 +1,9 @@
 
 package cn.ds.transaction.framework.recovery;
 
-import cn.ds.transaction.framework.AlphaResponse;
+import cn.ds.transaction.framework.SagaSvrResponse;
 import cn.ds.transaction.framework.annotations.Compensable;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.interceptor.CompensableInterceptor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -16,8 +16,8 @@ import java.lang.reflect.Method;
 
 /**
  * DefaultRecovery is used to execute business logic once.
- * The corresponding events will report to alpha server before and after the execution of business logic.
- * If there are errors while executing the business logic, a TxAbortedEvent will be reported to alpha.
+ * The corresponding events will report to Saga server before and after the execution of business logic.
+ * If there are errors while executing the business logic, a TxAbortedEvent will be reported to SagaSvrver.
  *
  *                 pre                       post
  *     request --------- 2.business logic --------- response
@@ -32,7 +32,7 @@ public class DefaultRecovery extends AbstractRecoveryPolicy {
 
   @Override
   public Object applyTo(ProceedingJoinPoint joinPoint, Compensable compensable, CompensableInterceptor interceptor,
-                        OmegaContext context, String parentTxId, int forwardRetries) throws Throwable {
+                        SagaContext context, String parentTxId, int forwardRetries) throws Throwable {
     Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
     LOG.debug("Intercepting compensable method {} with context {}", method.toString(), context);
 
@@ -42,7 +42,7 @@ public class DefaultRecovery extends AbstractRecoveryPolicy {
     String retrySignature = (forwardRetries != 0 || compensationSignature.isEmpty()) ? method.toString() : "";
 
     //TODO:send TxStartedEvent
-    AlphaResponse response = interceptor.preIntercept(parentTxId, compensationSignature, compensable.forwardTimeout(),
+    SagaSvrResponse response = interceptor.preIntercept(parentTxId, compensationSignature, compensable.forwardTimeout(),
             retrySignature, forwardRetries, compensable.forwardTimeout(),
             compensable.reverseRetries(), compensable.reverseTimeout(), compensable.retryDelayInMilliseconds(), joinPoint.getArgs());
     if (response.aborted()) {

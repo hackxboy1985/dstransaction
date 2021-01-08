@@ -34,7 +34,7 @@ class GrpcCompensateStreamObserver extends ReconnectStreamObserver<GrpcCompensat
 
   @Override
   public void onNext(GrpcCompensateCommand command) {
-    LOG.info("Received compensate command, global tx id: {}, local tx id: {}, compensation method: {}",
+    LOG.info("Saga-Transaction::Compensate:Received compensate command, global tx id: {}, local tx id: {}, compensation method: {}",
         command.getGlobalTxId(), command.getLocalTxId(), command.getCompensationMethod());
 
     messageHandler.onReceive(

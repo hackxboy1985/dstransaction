@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import cn.ds.transaction.framework.enums.EventType;
 import cn.ds.transaction.framework.context.IdGenerator;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.interceptor.CompensableInterceptor;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
@@ -54,9 +54,9 @@ public class CompensableInterceptorTest {
     }
 
     @Override
-    public AlphaResponse send(TxEvent event) {
+    public SagaSvrResponse send(TxEvent event) {
       messages.add(event);
-      return new AlphaResponse(false);
+      return new SagaSvrResponse(false);
     }
   };
   
@@ -67,7 +67,7 @@ public class CompensableInterceptorTest {
 
   @SuppressWarnings("unchecked")
   private final IdGenerator<String> idGenerator = Mockito.mock(IdGenerator.class);
-  private final OmegaContext context = new OmegaContext(idGenerator);
+  private final SagaContext context = new SagaContext(idGenerator);
   private final CompensableInterceptor interceptor = new CompensableInterceptor(context, sender);
 
   @Before

@@ -4,9 +4,9 @@ package cn.ds.transaction.framework.aspect;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.annotations.SagaEnd;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.SagaAbortedEvent;
 import cn.ds.transaction.framework.SagaEndedEvent;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
@@ -22,10 +22,10 @@ import org.springframework.core.annotation.Order;
 @Order(value = 300)
 public class SagaEndAspect {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final OmegaContext context;
+  private final SagaContext context;
   private final SagaMessageSender sender;
 
-  public SagaEndAspect(SagaMessageSender sender, OmegaContext context) {
+  public SagaEndAspect(SagaMessageSender sender, SagaContext context) {
     this.sender = sender;
     this.context = context;
   }
@@ -38,8 +38,8 @@ public class SagaEndAspect {
         sendSagaEndedEvent();
         return result;
       } catch (Throwable throwable) {
-        // Don't check the OmegaException here.
-        if (!(throwable instanceof OmegaException)) {
+        // Don't check the SagaException here.
+        if (!(throwable instanceof SagaException)) {
           LOG.error("Transaction {} failed.", context.globalTxId());
           sendSagaAbortedEvent(method.toString(), throwable);
         }

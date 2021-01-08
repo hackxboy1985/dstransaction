@@ -20,9 +20,9 @@ import javax.transaction.InvalidTransactionException;
 
 import cn.ds.transaction.framework.enums.EventType;
 import cn.ds.transaction.framework.context.IdGenerator;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.annotations.Compensable;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.interceptor.CompensableInterceptor;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.recovery.ForwardRecovery;
@@ -49,7 +49,7 @@ public class ForwardRecoveryTest {
   @SuppressWarnings("unchecked")
   private final IdGenerator<String> idGenerator = mock(IdGenerator.class);
 
-  private final OmegaContext omegaContext = new OmegaContext(idGenerator);
+  private final SagaContext sagaContext = new SagaContext(idGenerator);
 
   private final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
@@ -84,17 +84,17 @@ public class ForwardRecoveryTest {
     }
 
     @Override
-    public AlphaResponse send(TxEvent event) {
+    public SagaSvrResponse send(TxEvent event) {
       messages.add(event);
-      return new AlphaResponse(false);
+      return new SagaSvrResponse(false);
     }
   };
 
-  private final CompensableInterceptor interceptor = new CompensableInterceptor(omegaContext, sender);
+  private final CompensableInterceptor interceptor = new CompensableInterceptor(sagaContext, sender);
 
   private final RecoveryPolicy recoveryPolicy = new ForwardRecovery();
 
-  private volatile OmegaException exception;
+  private volatile SagaException exception;
 
   @Before
   public void setUp() throws Exception {
@@ -106,19 +106,19 @@ public class ForwardRecoveryTest {
     when(compensable.compensationMethod()).thenReturn("doNothing");
     when(compensable.forwardRetries()).thenReturn(0);
 
-    omegaContext.setGlobalTxId(globalTxId);
-    omegaContext.setLocalTxId(localTxId);
+    sagaContext.setGlobalTxId(globalTxId);
+    sagaContext.setLocalTxId(localTxId);
   }
 
   @Test
   public void forwardExceptionWhenGlobalTxAborted() {
     SagaMessageSender sender = mock(SagaMessageSender.class);
-    when(sender.send(any(TxEvent.class))).thenReturn(new AlphaResponse(true));
+    when(sender.send(any(TxEvent.class))).thenReturn(new SagaSvrResponse(true));
 
-    CompensableInterceptor interceptor = new CompensableInterceptor(omegaContext, sender);
+    CompensableInterceptor interceptor = new CompensableInterceptor(sagaContext, sender);
 
     try {
-      recoveryPolicy.apply(joinPoint, compensable, interceptor, omegaContext, parentTxId, 0);
+      recoveryPolicy.apply(joinPoint, compensable, interceptor, sagaContext, parentTxId, 0);
       //expectFailing(InvalidTransactionException.class);
     } catch (InvalidTransactionException e) {
       assertThat(e.getMessage().contains("Abort sub transaction"), is(true));
@@ -135,7 +135,7 @@ public class ForwardRecoveryTest {
     when(joinPoint.proceed()).thenThrow(oops);
 
     try {
-      recoveryPolicy.apply(joinPoint, compensable, interceptor, omegaContext, parentTxId, 2);
+      recoveryPolicy.apply(joinPoint, compensable, interceptor, sagaContext, parentTxId, 2);
 //      expectFailing(RuntimeException.class);
     } catch (RuntimeException e) {
       //Sometimes thrown interrupt exception with CI

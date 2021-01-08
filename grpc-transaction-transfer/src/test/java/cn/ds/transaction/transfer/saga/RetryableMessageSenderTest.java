@@ -14,7 +14,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import cn.ds.transaction.framework.interfaces.MessageSender;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.SagaStartedEvent;
 import cn.ds.transaction.framework.TxEvent;
@@ -48,10 +48,10 @@ public class RetryableMessageSenderTest {
 
     try {
       messageSender.send(event);
-      expectFailing(OmegaException.class);
-    } catch (OmegaException e) {
+      expectFailing(SagaException.class);
+    } catch (SagaException e) {
       assertThat(e.getMessage(),
-          is("Failed to process subsequent requests because no alpha server is available"));
+          is("Failed to process subsequent requests because no SagaSvr server is available"));
     }
   }
 
@@ -62,8 +62,8 @@ public class RetryableMessageSenderTest {
       public void run() {
         try {
           messageSender.send(event);
-          expectFailing(OmegaException.class);
-        } catch (OmegaException e) {
+          expectFailing(SagaException.class);
+        } catch (SagaException e) {
           assertThat(e.getMessage().endsWith("interruption"), is(true));
         }
       }

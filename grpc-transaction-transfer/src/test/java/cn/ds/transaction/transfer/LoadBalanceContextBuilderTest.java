@@ -31,7 +31,7 @@ public class LoadBalanceContextBuilderTest {
   @Rule
   public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
-  private final AlphaClusterConfig clusterConfig = mock(AlphaClusterConfig.class);
+  private final SagaSvrClusterConfig clusterConfig = mock(SagaSvrClusterConfig.class);
   private final String serverName = uniquify("serviceName");
   private final ServiceConfig serviceConfig = new ServiceConfig(serverName);
   protected final String[] addresses = {"localhost:8080", "localhost:8090"};

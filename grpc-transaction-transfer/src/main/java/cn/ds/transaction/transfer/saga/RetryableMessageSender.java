@@ -6,9 +6,9 @@ import static cn.ds.transaction.framework.enums.EventType.SagaStartedEvent;
 
 import java.util.concurrent.BlockingQueue;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
-import cn.ds.transaction.framework.AlphaResponse;
+import cn.ds.transaction.framework.SagaSvrResponse;
 import cn.ds.transaction.framework.interfaces.MessageSender;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.TxEvent;
 
@@ -45,15 +45,15 @@ public class RetryableMessageSender implements SagaMessageSender {
   }
 
   @Override
-  public AlphaResponse send(TxEvent event) {
+  public SagaSvrResponse send(TxEvent event) {
     if (event.type() == SagaStartedEvent) {
-      throw new OmegaException("Failed to process subsequent requests because no alpha server is available");
+      throw new SagaException("Failed to process subsequent requests because no saga server is available");
     }
     try {
       return ((SagaMessageSender)availableMessageSenders.take()).send(event);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new OmegaException("Failed to send event " + event + " due to interruption", e);
+      throw new SagaException("Failed to send event " + event + " due to interruption", e);
     }
   }
 }

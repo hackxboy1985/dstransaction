@@ -3,9 +3,9 @@
 package cn.ds.transaction.framework;
 
 import cn.ds.transaction.framework.context.IdGenerator;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.enums.EventType;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.processor.SagaStartAnnotationProcessor;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
@@ -57,9 +57,9 @@ public class SagaStartAnnotationProcessorTest {
     }
 
     @Override
-    public AlphaResponse send(TxEvent event) {
+    public SagaSvrResponse send(TxEvent event) {
       messages.add(event);
-      return new AlphaResponse(false);
+      return new SagaSvrResponse(false);
     }
   };
 
@@ -67,8 +67,8 @@ public class SagaStartAnnotationProcessorTest {
 
   @SuppressWarnings("unchecked")
   private final IdGenerator<String> generator = mock(IdGenerator.class);
-  private final OmegaContext context = new OmegaContext(generator);
-  private final OmegaException exception = new OmegaException("exception",
+  private final SagaContext context = new SagaContext(generator);
+  private final SagaException exception = new SagaException("exception",
       new RuntimeException("runtime exception"));
 
   private final SagaStartAnnotationProcessor sagaStartAnnotationProcessor = new SagaStartAnnotationProcessor(

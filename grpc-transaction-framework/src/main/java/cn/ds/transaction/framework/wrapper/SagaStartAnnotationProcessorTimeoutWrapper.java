@@ -5,9 +5,9 @@ package cn.ds.transaction.framework.wrapper;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.nio.channels.ClosedByInterruptException;
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.annotations.SagaStart;
-import cn.ds.transaction.framework.exception.OmegaException;
+import cn.ds.transaction.framework.exception.SagaException;
 import cn.ds.transaction.framework.processor.SagaStartAnnotationProcessor;
 import cn.ds.transaction.framework.exception.TransactionTimeoutException;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -25,7 +25,7 @@ public class SagaStartAnnotationProcessorTimeoutWrapper {
     this.sagaStartAnnotationProcessor = sagaStartAnnotationProcessor;
   }
 
-  public Object apply(ProceedingJoinPoint joinPoint, SagaStart sagaStart, OmegaContext context)
+  public Object apply(ProceedingJoinPoint joinPoint, SagaStart sagaStart, SagaContext context)
       throws Throwable {
     final TimeoutProb timeoutProb = TimeoutProbManager.getInstance()
         .addTimeoutProb(sagaStart.timeout());
@@ -40,7 +40,7 @@ public class SagaStartAnnotationProcessorTimeoutWrapper {
       try {
         output = joinPoint.proceed();
         if (timeoutProb.getInterruptFailureException() != null) {
-          throw new OmegaException(timeoutProb.getInterruptFailureException());
+          throw new SagaException(timeoutProb.getInterruptFailureException());
         }
         if (sagaStart.autoClose()) {
           sagaStartAnnotationProcessor.postIntercept(context.globalTxId());
@@ -68,8 +68,8 @@ public class SagaStartAnnotationProcessorTimeoutWrapper {
           // Because the SagaActor state automatically change to suspended when timeout.
           throw new TransactionTimeoutException("Timeout interrupt", throwable);
         } else {
-          // We don't need to handle the OmegaException here
-          if (!(throwable instanceof OmegaException)) {
+          // We don't need to handle the SagaException here
+          if (!(throwable instanceof SagaException)) {
             LOG.info("TimeoutWrapper Exception {}", throwable.getClass().getName());
             sagaStartAnnotationProcessor.onError(method.toString(), throwable);
             LOG.error("Transaction {} failed.", context.globalTxId());

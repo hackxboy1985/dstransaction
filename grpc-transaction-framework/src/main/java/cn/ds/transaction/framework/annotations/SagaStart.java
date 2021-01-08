@@ -24,9 +24,8 @@ public @interface SagaStart {
   int timeout() default 0;
 
   /**
-   * Sending out SagaEnded event to Alpha once the SagaStart annotated method is finished without any error.
-   * Default value is true, which means Omega sends out the SagaEnded event to Alpha once the annotated method is finished.
-   * Value is false, which means Omega never sends out the SagaEnded event to Alpha once the annotated method is finished.
+   * 自动发送SagaEnded事件给saga服务器.
+   * 缺省为true.自动发送，false则不发送
    */
   boolean autoClose() default true;
 }

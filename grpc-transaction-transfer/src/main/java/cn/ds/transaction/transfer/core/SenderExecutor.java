@@ -2,9 +2,9 @@
 
 package cn.ds.transaction.transfer.core;
 
-import cn.ds.transaction.framework.AlphaResponse;
+import cn.ds.transaction.framework.SagaSvrResponse;
 
 public interface SenderExecutor<T> {
 
-  AlphaResponse apply(T event);
+  SagaSvrResponse apply(T event);
 }

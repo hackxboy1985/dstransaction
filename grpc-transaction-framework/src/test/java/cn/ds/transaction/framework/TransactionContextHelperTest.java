@@ -2,7 +2,7 @@
 
 package cn.ds.transaction.framework;
 
-import cn.ds.transaction.framework.context.OmegaContext;
+import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.context.TransactionContext;
 import cn.ds.transaction.framework.context.TransactionContextProperties;
 import cn.ds.transaction.framework.contextHelper.TransactionContextHelper;
@@ -66,26 +66,26 @@ public class TransactionContextHelperTest {
   }
 
   @Test
-  public void testPopulateOmegaContextWhenItsEmpty() {
+  public void testPopulateSagaContextWhenItsEmpty() {
 
-    OmegaContext omegaContext = new OmegaContext(null);
+    SagaContext sagaContext = new SagaContext(null);
 
-    transactionContextHelper.populateOmegaContext(omegaContext, txContext);
+    transactionContextHelper.populateSagaContext(sagaContext, txContext);
 
-    assertEquals(transactionGlobalTxId, omegaContext.globalTxId());
-    assertEquals(transactionLocalTxId, omegaContext.localTxId());
+    assertEquals(transactionGlobalTxId, sagaContext.globalTxId());
+    assertEquals(transactionLocalTxId, sagaContext.localTxId());
   }
 
   @Test
-  public void testPopulateOmegaContextWhenItsNotEmpty() {
-    OmegaContext omegaContext = new OmegaContext(null);
+  public void testPopulateSagaContextWhenItsNotEmpty() {
+    SagaContext sagaContext = new SagaContext(null);
 
-    omegaContext.setGlobalTxId("global-tx-id");
-    omegaContext.setLocalTxId("local-tx-id");
+    sagaContext.setGlobalTxId("global-tx-id");
+    sagaContext.setLocalTxId("local-tx-id");
 
-    transactionContextHelper.populateOmegaContext(omegaContext, txContext);
+    transactionContextHelper.populateSagaContext(sagaContext, txContext);
 
-    assertEquals(transactionGlobalTxId, omegaContext.globalTxId());
-    assertEquals(transactionLocalTxId, omegaContext.localTxId());
+    assertEquals(transactionGlobalTxId, sagaContext.globalTxId());
+    assertEquals(transactionLocalTxId, sagaContext.localTxId());
   }
 }

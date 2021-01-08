@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.UUID;
 
 import cn.ds.transaction.framework.annotations.SagaStart;
-import cn.ds.transaction.framework.context.AlphaMetas;
+import cn.ds.transaction.framework.context.SagaServerMetas;
 import cn.ds.transaction.framework.context.IdGenerator;
-import cn.ds.transaction.framework.context.OmegaContext;
-import cn.ds.transaction.framework.AlphaResponse;
+import cn.ds.transaction.framework.context.SagaContext;
+import cn.ds.transaction.framework.SagaSvrResponse;
 import cn.ds.transaction.framework.enums.EventType;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.TxEvent;
@@ -55,9 +55,9 @@ public class SagaStartAspectTest {
     }
 
     @Override
-    public AlphaResponse send(TxEvent event) {
+    public SagaSvrResponse send(TxEvent event) {
       messages.add(event);
-      return new AlphaResponse(false);
+      return new SagaSvrResponse(false);
     }
   };
   private final ProceedingJoinPoint joinPoint = Mockito.mock(ProceedingJoinPoint.class);
@@ -67,7 +67,7 @@ public class SagaStartAspectTest {
   private final IdGenerator<String> idGenerator = Mockito.mock(IdGenerator.class);
   private final SagaStart sagaStart = Mockito.mock(SagaStart.class);
 
-  private OmegaContext omegaContext;
+  private SagaContext sagaContext;
   private SagaStartAspect aspect;
 
   @Before
@@ -81,8 +81,8 @@ public class SagaStartAspectTest {
 
   @Test
   public void newGlobalTxIdInSagaStart() throws Throwable {
-    omegaContext = new OmegaContext(idGenerator);
-    aspect = new SagaStartAspect(sender, omegaContext);
+    sagaContext = new SagaContext(idGenerator);
+    aspect = new SagaStartAspect(sender, sagaContext);
     aspect.advise(joinPoint, sagaStart);
 
     TxEvent startedEvent = messages.get(0);
@@ -99,15 +99,15 @@ public class SagaStartAspectTest {
     assertThat(endedEvent.parentTxId(), is(nullValue()));
     assertThat(endedEvent.type(), is(EventType.SagaEndedEvent));
 
-    assertThat(omegaContext.globalTxId(), is(nullValue()));
-    assertThat(omegaContext.localTxId(), is(nullValue()));
+    assertThat(sagaContext.globalTxId(), is(nullValue()));
+    assertThat(sagaContext.localTxId(), is(nullValue()));
   }
 
   @Test
   public void dontSendingSagaEndMessage() throws Throwable {
     when(sagaStart.autoClose()).thenReturn(false);
-    omegaContext = new OmegaContext(idGenerator);
-    aspect = new SagaStartAspect(sender, omegaContext);
+    sagaContext = new SagaContext(idGenerator);
+    aspect = new SagaStartAspect(sender, sagaContext);
 
     aspect.advise(joinPoint, sagaStart);
     assertThat(messages.size(), is(1));
@@ -118,14 +118,14 @@ public class SagaStartAspectTest {
     assertThat(startedEvent.parentTxId(), is(nullValue()));
     assertThat(startedEvent.type(), is(EventType.SagaStartedEvent));
 
-    assertThat(omegaContext.globalTxId(), is(nullValue()));
-    assertThat(omegaContext.localTxId(), is(nullValue()));
+    assertThat(sagaContext.globalTxId(), is(nullValue()));
+    assertThat(sagaContext.localTxId(), is(nullValue()));
   }
 
   @Test
   public void clearContextOnSagaStartError() throws Throwable {
-    omegaContext = new OmegaContext(idGenerator);
-    aspect = new SagaStartAspect(sender, omegaContext);
+    sagaContext = new SagaContext(idGenerator);
+    aspect = new SagaStartAspect(sender, sagaContext);
     RuntimeException oops = new RuntimeException("oops");
 
     when(joinPoint.proceed()).thenThrow(oops);
@@ -152,14 +152,14 @@ public class SagaStartAspectTest {
     assertThat(event.parentTxId(), is(nullValue()));
     assertThat(event.type(), is(EventType.TxAbortedEvent));
 
-    assertThat(omegaContext.globalTxId(), is(nullValue()));
-    assertThat(omegaContext.localTxId(), is(nullValue()));
+    assertThat(sagaContext.globalTxId(), is(nullValue()));
+    assertThat(sagaContext.localTxId(), is(nullValue()));
   }
 
   @Test
   public void clearContextOnSagaStartErrorWithAkka() throws Throwable {
-    omegaContext = new OmegaContext(idGenerator, AlphaMetas.builder().akkaEnabled(true).build());
-    aspect = new SagaStartAspect(sender, omegaContext);
+    sagaContext = new SagaContext(idGenerator, SagaServerMetas.builder().akkaEnabled(true).build());
+    aspect = new SagaStartAspect(sender, sagaContext);
     RuntimeException oops = new RuntimeException("oops");
 
     when(joinPoint.proceed()).thenThrow(oops);
@@ -186,8 +186,8 @@ public class SagaStartAspectTest {
     assertThat(event.parentTxId(), is(nullValue()));
     assertThat(event.type(), is(EventType.SagaAbortedEvent));
 
-    assertThat(omegaContext.globalTxId(), is(nullValue()));
-    assertThat(omegaContext.localTxId(), is(nullValue()));
+    assertThat(sagaContext.globalTxId(), is(nullValue()));
+    assertThat(sagaContext.localTxId(), is(nullValue()));
   }
 
   private String doNothing() {

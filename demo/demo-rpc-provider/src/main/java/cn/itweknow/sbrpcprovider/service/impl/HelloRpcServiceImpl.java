@@ -26,6 +26,7 @@ public class HelloRpcServiceImpl implements HelloRpcService {
     }
 
     public String sayHiRollback(String msg) {
+        System.out.println("sayHiRollback excute!!");
         return "hi Rollback OK! " + msg;
     }
     public String sayHelloRollback(String msg) {

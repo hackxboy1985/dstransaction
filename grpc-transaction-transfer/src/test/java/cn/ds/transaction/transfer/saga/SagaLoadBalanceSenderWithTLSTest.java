@@ -10,7 +10,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import cn.ds.transaction.framework.context.ServiceConfig;
-import cn.ds.transaction.transfer.AlphaClusterConfig;
+import cn.ds.transaction.transfer.SagaSvrClusterConfig;
 import cn.ds.transaction.transfer.core.FastestSender;
 import cn.ds.transaction.transfer.core.LoadBalanceContext;
 import cn.ds.transaction.transfer.core.LoadBalanceContextBuilder;
@@ -38,7 +38,7 @@ public class SagaLoadBalanceSenderWithTLSTest extends SagaLoadBalancedSenderTest
   @Override
   protected SagaLoadBalanceSender newMessageSender(String[] addresses) {
     ClassLoader classLoader = getClass().getClassLoader();
-    AlphaClusterConfig clusterConfig = AlphaClusterConfig.builder()
+    SagaSvrClusterConfig clusterConfig = SagaSvrClusterConfig.builder()
         .addresses(ImmutableList.copyOf(addresses))
         .enableMutualAuth(true)
         .enableSSL(true)

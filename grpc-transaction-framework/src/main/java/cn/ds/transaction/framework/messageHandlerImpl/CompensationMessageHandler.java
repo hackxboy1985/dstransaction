@@ -26,7 +26,7 @@ public class CompensationMessageHandler implements MessageHandler {
   public void onReceive(String globalTxId, String localTxId, String parentTxId, String compensationMethod,
       Object... payloads) {
     context.apply(globalTxId, localTxId, parentTxId, compensationMethod, payloads);
-    if (!context.getOmegaContext().getAlphaMetas().isAkkaEnabled()) {
+    if (!context.getSagaContext().getSagaServerMetas().isAkkaEnabled()) {
       sender.send(new TxCompensatedEvent(globalTxId, localTxId, parentTxId, compensationMethod));
     }
   }

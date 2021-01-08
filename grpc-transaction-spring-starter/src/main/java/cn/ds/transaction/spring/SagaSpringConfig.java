@@ -3,15 +3,15 @@
 package cn.ds.transaction.spring;
 
 import cn.ds.transaction.framework.CallbackContext;
-import cn.ds.transaction.framework.common.AlphaMetaKeys;
+import cn.ds.transaction.framework.common.SagaServerMetaKeys;
 import cn.ds.transaction.framework.context.*;
 import cn.ds.transaction.framework.interfaces.MessageFormat;
 import cn.ds.transaction.framework.interfaces.MessageHandler;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.messageFormat.KryoMessageFormat;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
-import cn.ds.transaction.transfer.AlphaClusterConfig;
-import cn.ds.transaction.transfer.AlphaClusterDiscovery;
+import cn.ds.transaction.transfer.SagaSvrClusterConfig;
+import cn.ds.transaction.transfer.SagaSvrClusterDiscovery;
 import cn.ds.transaction.transfer.core.FastestSender;
 import cn.ds.transaction.transfer.core.LoadBalanceContext;
 import cn.ds.transaction.transfer.core.LoadBalanceContextBuilder;
@@ -42,15 +42,15 @@ class SagaSpringConfig {
   }
 
   @Bean
-  OmegaContext omegaContext(@Qualifier("sagaUniqueIdGenerator") IdGenerator<String> idGenerator, SagaMessageSender messageSender) {
+  SagaContext sagaContext(@Qualifier("sagaUniqueIdGenerator") IdGenerator<String> idGenerator, SagaMessageSender messageSender) {
     ServerMeta serverMeta = messageSender.onGetServerMeta();
-    boolean akkaEnabeld = Boolean.parseBoolean(serverMeta.getMetaMap().get(AlphaMetaKeys.AkkaEnabled.name()));
-    return new OmegaContext(idGenerator, AlphaMetas.builder().akkaEnabled(akkaEnabeld).build());
+    boolean akkaEnabeld = Boolean.parseBoolean(serverMeta.getMetaMap().get(SagaServerMetaKeys.AkkaEnabled.name()));
+    return new SagaContext(idGenerator, SagaServerMetas.builder().akkaEnabled(akkaEnabeld).build());
   }
 
   @Bean(name = {"compensationContext"})
-  CallbackContext compensationContext(OmegaContext omegaContext, SagaMessageSender sender) {
-    return new CallbackContext(omegaContext, sender);
+  CallbackContext compensationContext(SagaContext sagaContext, SagaMessageSender sender) {
+    return new CallbackContext(sagaContext, sender);
   }
 
 
@@ -61,26 +61,26 @@ class SagaSpringConfig {
 
 
   @Bean
-  @ConditionalOnProperty(name = "alpha.cluster.register.type", havingValue = "default", matchIfMissing = true)
-  AlphaClusterDiscovery alphaClusterAddress(@Value("${alpha.cluster.address:0.0.0.0:8080}") String[] addresses){
-    return AlphaClusterDiscovery.builder().addresses(addresses).build();
+  @ConditionalOnProperty(name = "saga.cluster.register.type", havingValue = "default", matchIfMissing = true)
+  SagaSvrClusterDiscovery sagaSvrClusterDiscovery(@Value("${saga.cluster.address:0.0.0.0:8080}") String[] addresses){
+    return SagaSvrClusterDiscovery.builder().addresses(addresses).build();
   }
 
   @Bean
-  AlphaClusterConfig alphaClusterConfig(
-      @Value("${alpha.cluster.ssl.enable:false}") boolean enableSSL,
-      @Value("${alpha.cluster.ssl.mutualAuth:false}") boolean mutualAuth,
-      @Value("${alpha.cluster.ssl.cert:client.crt}") String cert,
-      @Value("${alpha.cluster.ssl.key:client.pem}") String key,
-      @Value("${alpha.cluster.ssl.certChain:ca.crt}") String certChain,
-      @Lazy AlphaClusterDiscovery alphaClusterDiscovery,
+  SagaSvrClusterConfig sagaSvrClusterConfig(
+      @Value("${saga.cluster.ssl.enable:false}") boolean enableSSL,
+      @Value("${saga.cluster.ssl.mutualAuth:false}") boolean mutualAuth,
+      @Value("${saga.cluster.ssl.cert:client.crt}") String cert,
+      @Value("${saga.cluster.ssl.key:client.pem}") String key,
+      @Value("${saga.cluster.ssl.certChain:ca.crt}") String certChain,
+      @Lazy SagaSvrClusterDiscovery sagaSvrClusterDiscovery,
       @Lazy MessageHandler handler
       ) {
 
-    LOG.info("Saga-Transaction::Discovery saga svr cluster address {} from {}",alphaClusterDiscovery.getAddresses() == null ? "" : String.join(",",alphaClusterDiscovery.getAddresses()), alphaClusterDiscovery.getDiscoveryType().name());
+    LOG.info("Saga-Transaction::Discovery saga sever cluster address {} from {}",sagaSvrClusterDiscovery.getAddresses() == null ? "" : String.join(",",sagaSvrClusterDiscovery.getAddresses()), sagaSvrClusterDiscovery.getDiscoveryType().name());
     MessageFormat messageFormat = new KryoMessageFormat();
-    AlphaClusterConfig clusterConfig = AlphaClusterConfig.builder()
-        .addresses(ImmutableList.copyOf(alphaClusterDiscovery.getAddresses()))
+    SagaSvrClusterConfig clusterConfig = SagaSvrClusterConfig.builder()
+        .addresses(ImmutableList.copyOf(sagaSvrClusterDiscovery.getAddresses()))
         .enableSSL(enableSSL)
         .enableMutualAuth(mutualAuth)
         .cert(cert)
@@ -95,13 +95,13 @@ class SagaSpringConfig {
 
   @Bean(name = "sagaLoadContext")
   LoadBalanceContext sagaLoadBalanceSenderContext(
-      AlphaClusterConfig alphaClusterConfig,
+      SagaSvrClusterConfig sagaSvrClusterConfig,
       ServiceConfig serviceConfig,
       @Value("${saga.connection.reconnectDelay:3000}") int reconnectDelay,
       @Value("${saga.connection.sending.timeout:8}") int timeoutSeconds) {
     LoadBalanceContext loadBalanceSenderContext = new LoadBalanceContextBuilder(
         TransactionType.SAGA,
-        alphaClusterConfig,
+            sagaSvrClusterConfig,
         serviceConfig,
         reconnectDelay,
         timeoutSeconds).build();
