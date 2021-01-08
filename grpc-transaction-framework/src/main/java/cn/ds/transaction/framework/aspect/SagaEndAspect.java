@@ -30,7 +30,7 @@ public class SagaEndAspect {
     this.context = context;
   }
 
-  @Around("execution(@cn.ds.transaction.framework.context.annotations.SagaEnd * *(..)) && @annotation(sagaEnd)")
+  @Around("execution(@cn.ds.transaction.framework.annotations.SagaEnd * *(..)) && @annotation(sagaEnd)")
   Object advise(ProceedingJoinPoint joinPoint, SagaEnd sagaEnd) throws Throwable {
       Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
       try {
@@ -40,7 +40,7 @@ public class SagaEndAspect {
       } catch (Throwable throwable) {
         // Don't check the SagaException here.
         if (!(throwable instanceof SagaException)) {
-          LOG.error("Transaction {} failed.", context.globalTxId());
+          LOG.error("Saga-Transaction::Transaction {} failed.", context.globalTxId());
           sendSagaAbortedEvent(method.toString(), throwable);
         }
         throw throwable;

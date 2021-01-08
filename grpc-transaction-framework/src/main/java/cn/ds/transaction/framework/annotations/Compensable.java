@@ -8,71 +8,57 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates the annotated method will start a sub-transaction. <br>
- * It is suggested to use the Spring Transactional annotation to wrap the sub-transaction method.
- * A <code>@compensable</code> method should satisfy below requirements:
- * <ol>
- *   <li>all parameters are serialized</li>
- *   <li>is idempotent</li>
- *   <li>the object instance which @compensable method resides in should be stateless</li>
- *   <li>if compensationMethod exists, both methods must be commutative, see this
- *   <a href="https://servicecomb.apache.org/docs/distributed_saga_2/">link</a>.</li>
- * </ol>
+ * 子事务注解. <br>
+ * 建议使用Spring事务注解来标注该子事务.以使补偿能够能够遵循ACID
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Compensable {
 
   /**
-   * The retires number of the forward compensable method.
-   * Default value is 0, which means never retry it
-   * value is -1, which means retry it until succeed
-   * value &gt; 0, which means the retry number
-   * value &lt; -1, an IllegalArgumentException will be thrown
+   * 向前补偿次数.
+   * 缺省0，不补偿
+   * 值-1, 重试直到成功
+   * 值>0, 重试次数
+   * 值<-1,抛参数异常IllegalArgumentException
    *
-   * @return the forward retries number
+   * @return 向前补偿次数
    */
   int forwardRetries() default 0;
 
   /**
-   * The retires number of the reverse compensable method.
-   * Default value is 0, which means never retry it
-   * value &gt; 0, which means the retry number
-   * value &lt; 0, an IllegalArgumentException will be thrown
+   * 向后补偿次数.
+   * 缺省0，不补偿
+   * 值>0, 重试次数
+   * 值<0,抛参数异常IllegalArgumentException
    *
-   * @return the reverse retries number
+   * @return 向后补偿次数
    */
   int reverseRetries() default 0;
 
   /**
-   * Compensation method name.<br>
-   * A compensation method should satisfy below requirements:
-   * <ol>
-   *   <li>has same parameter list as @compensable method's</li>
-   *   <li>all parameters are serialized</li>
-   *   <li>is idempotent</li>
-   *   <li>be in the same class as @compensable method is in</li>
-   * </ol>
+   * 补偿方法名.<br>
+   * 补偿方法须满足幂等要求,与事务方法在同一个类且参数须相同且可序列化
    *
-   * @return the compensation method name
+   * @return 补偿方法名
    */
   String compensationMethod() default "";
 
   int retryDelayInMilliseconds() default 5;
 
   /**
-   * <code>@compensable</code> forward compensable method timeout, in seconds. <br>
-   * Default value is 0, which means never timeout.
+   * 向前补偿超时时间(秒). <br>
+   * 缺省0, 永不超时.
    *
-   * @return the forward timeout value
+   * @return 向前补偿超时时间
    */
   int forwardTimeout() default 0;
 
   /**
-   * <code>@compensable</code> reverse compensable method timeout, in seconds. <br>
-   * Default value is 0, which means never timeout.
+   * 向后补偿超时时间(秒). <br>
+   * 缺省0, 永不超时.
    *
-   * @return the reverse timeout value
+   * @return 向后补偿超时时间
    */
   int reverseTimeout() default 0;
 }

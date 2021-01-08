@@ -15,9 +15,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 
 /**
- * DefaultRecovery is used to execute business logic once.
- * The corresponding events will report to Saga server before and after the execution of business logic.
- * If there are errors while executing the business logic, a TxAbortedEvent will be reported to SagaSvrver.
+ * 缺省补偿即回滚,相应的事件将在执行业务逻辑之前和之后报告给Saga服务器
+ * 如果在执行业务逻辑时出现错误，则会向报告TxAbortedEvent给SagaServer
  *
  *                 pre                       post
  *     request --------- 2.business logic --------- response
@@ -34,7 +33,7 @@ public class DefaultRecovery extends AbstractRecoveryPolicy {
   public Object applyTo(ProceedingJoinPoint joinPoint, Compensable compensable, CompensableInterceptor interceptor,
                         SagaContext context, String parentTxId, int forwardRetries) throws Throwable {
     Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-    LOG.debug("Intercepting compensable method {} with context {}", method.toString(), context);
+    LOG.debug("Saga-Transaction::DefaultRecovery compensable method {} with context {}", method.toString(), context);
 
     String compensationSignature =
         compensable.compensationMethod().isEmpty() ? "" : compensationMethodSignature(joinPoint, compensable, method);
@@ -54,12 +53,14 @@ public class DefaultRecovery extends AbstractRecoveryPolicy {
 
     try {
       Object result = joinPoint.proceed();
-      interceptor.postIntercept(parentTxId, compensationSignature);
 
+      //TODO:send TxEndedEvent
+      interceptor.postIntercept(parentTxId, compensationSignature);
       return result;
     } catch (Throwable throwable) {
       if (compensable.forwardRetries() == 0 || (compensable.forwardRetries() > 0
           && forwardRetries == 1)) {
+        //TODO:send TxAbortedEvent
         interceptor.onError(parentTxId, compensationSignature, throwable);
       }
       throw throwable;

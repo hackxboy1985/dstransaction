@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
+/**
+ * 线程池执行时动态代理，以支持异步线程操作时事务上下文丢失的场景
+ */
 class ExecutorFieldCallback implements FieldCallback {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -77,7 +80,7 @@ class ExecutorFieldCallback implements FieldCallback {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       try {
-        LOG.debug("Setting SagaContext with globalTxId [{}] & localTxId [{}]",
+        LOG.info("Setting SagaContext with globalTxId [{}] & localTxId [{}]",
             globalTxId,
             localTxId);
 
@@ -87,14 +90,14 @@ class ExecutorFieldCallback implements FieldCallback {
         return method.invoke(runnable, args);
       } finally {
         sagaContext.clear();
-        LOG.debug("Cleared SagaContext with globalTxId [{}] & localTxId [{}]",
+        LOG.info("Cleared SagaContext with globalTxId [{}] & localTxId [{}]",
             globalTxId,
             localTxId);
       }
     }
   }
 
-  //TODO:执行代理
+  //TODO:线程执行代理,用于增强方法执行时能够获取事务上下文
   private static class ExecutorProxy implements InvocationHandler {
     private final Object target;
     private final SagaContext sagaContext;

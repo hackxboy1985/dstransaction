@@ -34,11 +34,17 @@ public class RpcDecoder extends ByteToMessageDecoder {
         if (in.readableBytes() < dataLength) {
             in.resetReaderIndex();
         }
-        //将ByteBuf转换为byte[]
-        byte[] data = new byte[dataLength];
-        in.readBytes(data);
-        //将data转换成object
-        Object obj = SerializationUtil.deserialize(data, genericClass);
-        out.add(obj);
+        try {
+            //将ByteBuf转换为byte[]
+            byte[] data = new byte[dataLength];
+            in.readBytes(data);
+            //将data转换成object
+            Object obj = SerializationUtil.deserialize(data, genericClass);
+            out.add(obj);
+        }catch (Exception e){
+            System.out.println("!!!!!!!!decode error!!!!!!!"+e.getMessage());
+            e.printStackTrace();
+
+        }
     }
 }

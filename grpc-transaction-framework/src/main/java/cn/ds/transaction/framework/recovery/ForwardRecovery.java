@@ -16,9 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ForwardRecovery is used to execute business logic with the given forwardRetries times.
- * If forwardRetries is above 0, it will retry the given times at most.
- * If forwardRetries == -1, it will retry forever until interrupted.
+ * 向前补偿恢复,用以给定的forwardRetries次数执行业务逻辑。
+ * 如果forwardRetries大于0，它最多将重试给定的次数。
+ * 如果forwardRetries==-1，它将永远重试，直到中断。
  */
 public class ForwardRecovery extends DefaultRecovery {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -41,18 +41,18 @@ public class ForwardRecovery extends DefaultRecovery {
           remains--;
           if (remains == 0) {
             LOG.error(
-                "Forward Retried sub tx failed maximum times, global tx id: {}, local tx id: {}, method: {}, retried times: {}",
+                "Saga-Transaction::Forward Retried sub tx failed maximum times, global tx id: {}, local tx id: {}, method: {}, retried times: {}",
                 context.globalTxId(), context.localTxId(), method.toString(), forwardRetries);
             throw throwable;
           }
 
-          LOG.warn("Forward Retrying sub tx failed, global tx id: {}, local tx id: {}, method: {}, remains: {}",
+          LOG.warn("Saga-Transaction::Forward Retrying sub tx failed, global tx id: {}, local tx id: {}, method: {}, remains: {}",
               context.globalTxId(), context.localTxId(), method.toString(), remains);
           Thread.sleep(compensable.retryDelayInMilliseconds());
         }
       }
     } catch (InterruptedException e) {
-      String errorMessage = "Failed to handle tx because it is interrupted, global tx id: " + context.globalTxId()
+      String errorMessage = "Saga-Transaction::Failed to handle tx because it is interrupted, global tx id: " + context.globalTxId()
           + ", local tx id: " + context.localTxId() + ", method: " + method.toString();
       LOG.error(errorMessage);
       interceptor.onError(parentTxId, compensationMethodSignature(joinPoint, compensable, method), e);

@@ -4,8 +4,7 @@ package cn.ds.transaction.framework.context;
 import java.io.Serializable;
 
 /**
- *  This class is holding the Transaction related context which could be use in customer code
- *  , and it is immutable.
+ *  用户空间可以使用此事务上下文
  */
 public class TransactionContext implements Serializable {
   private final String globalTxId;

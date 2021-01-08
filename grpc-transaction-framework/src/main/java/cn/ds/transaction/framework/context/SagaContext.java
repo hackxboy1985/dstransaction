@@ -2,7 +2,7 @@
 package cn.ds.transaction.framework.context;
 
 /**
- * SagaContext holds the globalTxId and localTxId which are used to build the invocation map
+ * SagaContext是事务线程上下文，用于串起整个调用链
  */
 public class SagaContext {
   public static final String GLOBAL_TX_ID_KEY = "X-Pack-Global-Transaction-Id";

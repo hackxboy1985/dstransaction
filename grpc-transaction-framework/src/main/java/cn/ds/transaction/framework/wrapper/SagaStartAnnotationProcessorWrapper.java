@@ -27,21 +27,21 @@ public class SagaStartAnnotationProcessorWrapper {
       throws Throwable {
     Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
     sagaStartAnnotationProcessor.preIntercept(sagaStart.timeout());
-    LOG.debug("Initialized context {} before execution of method {}", context, method.toString());
+    LOG.debug("Saga-Transaction::Initialized context {} before execution of method {}", context, method.toString());
     try {
       Object result = joinPoint.proceed();
       if (sagaStart.autoClose()) {
         sagaStartAnnotationProcessor.postIntercept(context.globalTxId());
-        LOG.debug("Transaction with context {} has finished.", context);
+        LOG.debug("Saga-Transaction::Transaction with context {} has finished.", context);
       } else {
-        LOG.debug("Transaction with context {} is not finished in the SagaStarted annotated method.", context);
+        LOG.debug("Saga-Transaction::Transaction with context {} is not finished in the SagaStarted annotated method.", context);
       }
       return result;
     } catch (Throwable throwable) {
       // We don't need to handle the SagaException here
       if (!(throwable instanceof SagaException)) {
         sagaStartAnnotationProcessor.onError(method.toString(), throwable);
-        LOG.error("Transaction {} failed.", context.globalTxId());
+        LOG.error("Saga-Transaction::Transaction {} failed.", context.globalTxId());
       }
       throw throwable;
     } finally {

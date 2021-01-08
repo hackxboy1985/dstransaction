@@ -47,14 +47,14 @@ public class SagaStartAnnotationProcessor {
 
   public void onError(String compensationMethod, Throwable throwable) {
     String globalTxId = sagaContext.globalTxId();
-    if(sagaContext.getSagaServerMetas().isAkkaEnabled()){
+//    if(sagaContext.getSagaServerMetas().isAkkaEnabled()){
       sender.send(
           new SagaAbortedEvent(globalTxId, sagaContext.localTxId(), null, compensationMethod,
               throwable));
-    }else{
-      sender.send(
-          new TxAbortedEvent(globalTxId, sagaContext.localTxId(), null, compensationMethod,
-              throwable));
-    }
+//    }else{
+//      sender.send(
+//          new TxAbortedEvent(globalTxId, sagaContext.localTxId(), null, compensationMethod,
+//              throwable));
+//    }
   }
 }

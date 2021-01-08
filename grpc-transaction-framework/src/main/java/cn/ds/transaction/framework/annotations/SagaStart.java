@@ -9,15 +9,15 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Indicates the annotated method will start a saga.
+ * 标示Saga事务的开始.
  */
 @Retention(RUNTIME)
 @Target(METHOD)
 public @interface SagaStart {
 
   /**
-   * Saga timeout, in seconds. <br>
-   * Default value is 0, which means never timeout.
+   * Saga超时时间(秒). <br>
+   * 缺省0, 永不超时.
    *
    * @return
    */

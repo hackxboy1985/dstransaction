@@ -8,10 +8,8 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Indicates once the annotated method is finished, it will end a saga.
- * Please note:
- *  You need to set the attribute of @SagaStart autoClose to be false，
- *  then you can end the Saga transaction as you want with this SagaEnd annotation.
+ * Saga事务结束.
+ * 一般不使用此注解，除非@SagaStart的autoClose属性设置为false
  */
 @Retention(RUNTIME)
 @Target(METHOD)

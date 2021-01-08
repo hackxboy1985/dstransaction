@@ -45,11 +45,11 @@ public class SagaStartAnnotationProcessorTimeoutWrapper {
         if (sagaStart.autoClose()) {
           sagaStartAnnotationProcessor.postIntercept(context.globalTxId());
           if (LOG.isDebugEnabled()) {
-            LOG.debug("Transaction with context {} has finished.", context);
+            LOG.debug("Saga-Transaction::Transaction with context {} has finished.", context);
           }
         } else {
           if (LOG.isDebugEnabled()) {
-            LOG.debug("Transaction with context {} is not finished in the SagaStarted annotated method.", context);
+            LOG.debug("Saga-Transaction::Transaction with context {} is not finished in the SagaStarted annotated method.", context);
           }
         }
         return output;
@@ -58,10 +58,10 @@ public class SagaStartAnnotationProcessorTimeoutWrapper {
         //  At this point, we don't need to send SagaAbortEvent, just need to throw a TransactionTimeoutException
         //  For example, java.net.SocketTimeoutException, etc.
         if (LOG.isDebugEnabled()) {
-          LOG.debug("TimeoutWrapper exception {}", throwable.getClass().getName());
+          LOG.debug("Saga-Transaction::TimeoutWrapper exception {}", throwable.getClass().getName());
         }
         if (timeoutProb.getInterruptFailureException() != null) {
-          LOG.info("TimeoutProb interrupt fail");
+          LOG.info("Saga-Transaction::TimeoutProb interrupt fail");
           throw timeoutProb.getInterruptFailureException();
         } else if (isThreadInterruptException(throwable)) {
           // We don't have to send an SagaAbortEvent
@@ -70,9 +70,9 @@ public class SagaStartAnnotationProcessorTimeoutWrapper {
         } else {
           // We don't need to handle the SagaException here
           if (!(throwable instanceof SagaException)) {
-            LOG.info("TimeoutWrapper Exception {}", throwable.getClass().getName());
+            LOG.info("Saga-Transaction::TimeoutWrapper Exception {}", throwable.getClass().getName());
             sagaStartAnnotationProcessor.onError(method.toString(), throwable);
-            LOG.error("Transaction {} failed.", context.globalTxId());
+            LOG.error("Saga-Transaction::Transaction {} failed.", context.globalTxId());
           }
         }
         throw throwable;
