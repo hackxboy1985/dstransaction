@@ -25,6 +25,10 @@ public class GrpcOnErrorHandler {
     this.grpcRetryContext = new GrpcRetryContext(timeoutSeconds);
   }
 
+  /**
+   * 处理异常：异常后，将重连线程入阻塞队列进行重联
+   * @param messageSender
+   */
   public void handle(MessageSender messageSender) {
     final Runnable runnable = new PushBackReconnectRunnable(
         messageSender,
@@ -43,6 +47,9 @@ public class GrpcOnErrorHandler {
     return grpcRetryContext;
   }
 
+  /**
+   * 重连上下文
+   */
   public static class GrpcRetryContext {
 
     private final int timeoutSeconds;

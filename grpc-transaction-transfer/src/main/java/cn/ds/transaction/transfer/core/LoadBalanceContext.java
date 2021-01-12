@@ -21,8 +21,14 @@ public class LoadBalanceContext {
 
   private final Collection<ManagedChannel> channels;
 
+  /**
+   * 阻塞队列
+   */
   private final PendingTaskRunner pendingTaskRunner;
 
+  /**
+   * 错误处理器
+   */
   private final GrpcOnErrorHandler grpcOnErrorHandler;
 
   public LoadBalanceContext(Map<MessageSender, Long> senders,

@@ -32,6 +32,9 @@ public class PushBackReconnectRunnable implements Runnable {
 
   @Override
   public void run() {
+    /**
+     * 尝试断开并重连,并放入map中
+     */
     try {
       LOG.info("Saga-Transaction::Reconnect:Retry connecting to saga at {}", messageSender.target());
       messageSender.onDisconnected();

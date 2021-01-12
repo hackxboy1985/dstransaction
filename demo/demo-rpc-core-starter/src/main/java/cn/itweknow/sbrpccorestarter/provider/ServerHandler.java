@@ -4,6 +4,7 @@ import cn.itweknow.sbrpccorestarter.interceptor.RpcResponseInterceptorProcessor;
 import cn.itweknow.sbrpccorestarter.model.RpcRequest;
 import cn.itweknow.sbrpccorestarter.model.RpcResponse;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import java.lang.reflect.Method;
  * @date 2020/12/29 19:12
  * @description
  */
+@ChannelHandler.Sharable
 public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     private static final Logger logger = LoggerFactory

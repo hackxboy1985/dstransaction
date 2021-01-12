@@ -21,7 +21,9 @@ public class PendingTaskRunner {
     this.reconnectDelay = reconnectDelay;
   }
 
+
   public void start() {
+    //延时循环执行pendingTasks中的PushBackReconnectRunnable线程
     scheduler.scheduleWithFixedDelay(new Runnable() {
       @Override
       public void run() {

@@ -121,6 +121,7 @@ public class LoadBalanceContextBuilder {
     builder.ciphers(Arrays.asList(prop.getProperty("ciphers").split(",")));
     builder.trustManager(new File(clusterConfig.getCertChain()));
 
+    //多重授权
     if (clusterConfig.isEnableMutualAuth()) {
       builder.keyManager(new File(clusterConfig.getCert()), new File(clusterConfig.getKey()));
     }
