@@ -164,6 +164,8 @@ public class RpcClientPool extends SimpleChannelInboundHandler<RpcResponse> {
         channelMap.remove(key);
         channelGroup.remove(ctx.channel());
         requestFuture.remove(ctx.channel().id());
+        //TODO:失效后是否需要close?或许channel会自动close
+        ctx.close();
     }
 
     @Override
@@ -180,6 +182,12 @@ public class RpcClientPool extends SimpleChannelInboundHandler<RpcResponse> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error("RpcStarter::Consumer 响应异常 Consumer caught exception,", cause);
+        //TODO:异常将链接关闭
+        InetSocketAddress inetSocketAddress = (InetSocketAddress)ctx.channel().remoteAddress();
+        String key = inetSocketAddress.getHostName() + ":" + inetSocketAddress.getPort();
+        channelMap.remove(key);
+        channelGroup.remove(ctx.channel());
+        requestFuture.remove(ctx.channel().id());
         ctx.close();
     }
 }

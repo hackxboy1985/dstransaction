@@ -23,13 +23,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     private static final Logger logger = LoggerFactory
             .getLogger(ServerHandler.class);
 
-//    RpcResponseInterceptorProcessor rpcResponseInterceptorProcessor;
     RpcProviderHandler rpcProviderHandler;
 
     public ServerHandler(){}
-//    public ServerHandler(RpcResponseInterceptorProcessor rpcResponseInterceptorProcessor){
-//        this.rpcResponseInterceptorProcessor=rpcResponseInterceptorProcessor;
-//    }
     public ServerHandler(RpcProviderHandler rpcProviderHandler){
         this.rpcProviderHandler=rpcProviderHandler;
     }
@@ -43,6 +39,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         logger.info("RpcStarter::Provide::server disconnected {},{}",  ctx.channel().remoteAddress().toString(), ctx.channel().id());
+        //ctx.close();
     }
 
     @Override
@@ -50,21 +47,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
                                 RpcRequest request) throws Exception {
         logger.info("RpcStarter::Provider::server receive data request,{}", request);
         RpcResponse rpcResponse = rpcProviderHandler.handle(request);
-//        // 返回的对象。
-//        RpcResponse rpcResponse = new RpcResponse();
-//        // 将请求id原路带回
-//        rpcResponse.setRequestId(request.getRequestId());
-//        try {
-//            if (rpcResponseInterceptorProcessor != null)
-//            rpcResponseInterceptorProcessor.preIntercept(request.getClassName(),request);
-//            Object result = handle(request);
-//            rpcResponse.setResult(result);
-//            if (rpcResponseInterceptorProcessor != null)
-//            rpcResponseInterceptorProcessor.postIntercept(request.getClassName(),request);
-//        } catch (Exception e) {
-//            rpcResponse.setError(e);
-//            rpcResponse.setMsg(e.getMessage());
-//        }
 
         //TODO:addListener(ChannelFutureListener.CLOSE)会异步断开连接,服务端不应该主动断开连接.
 //        channelHandlerContext.writeAndFlush(rpcResponse).addListener(ChannelFutureListener.CLOSE);
