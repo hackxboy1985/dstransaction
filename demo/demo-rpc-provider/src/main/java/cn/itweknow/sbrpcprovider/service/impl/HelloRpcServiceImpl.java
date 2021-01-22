@@ -18,6 +18,19 @@ public class HelloRpcServiceImpl implements HelloRpcService {
         return "Hi RPC!" + msg;
     }
 
+
+    int i = 0;
+    @Override
+    @Compensable(compensationMethod="sayHiRollback", forwardRetries = 2)
+    public String sayHiForward(String msg){
+        if(i<2){
+            i++;
+            throw new RuntimeException("test forward");
+        }
+        return "Hi RPC!" + msg;
+    }
+
+
     @Override
     @Compensable(compensationMethod="sayHelloRollback")
     public String sayHello(String msg) {

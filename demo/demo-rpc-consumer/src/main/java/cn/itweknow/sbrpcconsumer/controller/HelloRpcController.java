@@ -16,12 +16,25 @@ public class HelloRpcController {
     @RpcConsumer(providerName = "provider")
     private HelloRpcService helloRpcService;
 
+    //TODO:测试向后补偿
     @SagaStart
     @GetMapping("/hi")
     public String hello(@RequestParam String msg) {
         long start = System.currentTimeMillis();
         String ret="";
         ret = helloRpcService.sayHi(msg);
+        afterSayhi();
+        System.out.println("请求耗时:" + (System.currentTimeMillis()-start));
+        return ret;
+    }
+
+    //TODO:测试向前补偿
+    @SagaStart
+    @GetMapping("/hiForward")
+    public String sayHiForward(@RequestParam String msg) {
+        long start = System.currentTimeMillis();
+        String ret="";
+        ret = helloRpcService.sayHiForward(msg);
         afterSayhi();
         System.out.println("请求耗时:" + (System.currentTimeMillis()-start));
         return ret;

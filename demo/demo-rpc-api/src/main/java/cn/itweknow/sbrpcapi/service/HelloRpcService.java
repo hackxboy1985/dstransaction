@@ -11,6 +11,8 @@ public interface HelloRpcService {
 
     String sayHi(String msg);
 
+    String sayHiForward(String msg);
+
     String sayHello(String msg);
 
 }
