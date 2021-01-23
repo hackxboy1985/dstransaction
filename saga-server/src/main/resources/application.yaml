@@ -113,12 +113,17 @@ spring:
     url: jdbc:postgresql://postgresql.servicecomb.io:5432/saga?useSSL=false
     platform: postgresql
     continue-on-error: false
-    driver-class-name: org.postgresql.Driver
+#    driver-class-name: org.postgresql.Driver
 
   jpa:
+#    open-in-view: false
     properties:
       eclipselink:
         ddl-generation: none
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
 
 ---
 spring:

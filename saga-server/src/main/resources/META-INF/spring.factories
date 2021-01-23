@@ -1,2 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.saga.server.jpa.EclipseLinkJpaConfiguration
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#  org.saga.server.jpa.EclipseLinkJpaConfiguration

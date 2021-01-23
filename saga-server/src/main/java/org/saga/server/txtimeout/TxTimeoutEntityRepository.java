@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
 
-import org.saga.server.txtimeout.TxTimeout;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;

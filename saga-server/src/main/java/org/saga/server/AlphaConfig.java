@@ -160,7 +160,7 @@ public class AlphaConfig {
     ServerStartable bootstrap = new GrpcStartable(serverConfig, eventBus,
         bindableServices.toArray(new BindableService[0]));
     new Thread(bootstrap::start).start();
-    LOG.info("alpha.feature.akka.enabled=false, starting the saga db service");
+    LOG.info("alpha.feature.akka.enabled=false, starting the [Saga Service]");
     return bootstrap;
   }
 

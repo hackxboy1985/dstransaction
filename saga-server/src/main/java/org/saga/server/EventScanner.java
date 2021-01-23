@@ -54,7 +54,8 @@ public class EventScanner implements Runnable {
     this.commandRepository = commandRepository;
     this.timeoutRepository = timeoutRepository;
     this.omegaCallback = omegaCallback;
-    this.eventPollingInterval = eventPollingInterval;
+//    this.eventPollingInterval = eventPollingInterval;
+    this.eventPollingInterval = 10000;
     this.nodeStatus = nodeStatus;
   }
 
@@ -71,19 +72,24 @@ public class EventScanner implements Runnable {
   private void pollEvents() {
     scheduler.scheduleWithFixedDelay(
         () -> {
-          // only pull the events when working in the master mode
-          if(nodeStatus.isMaster()){
-            updateTimeoutStatus();
-            findTimeoutEvents();
-            abortTimeoutEvents();
-            saveUncompensatedEventsToCommands();
-            compensate();
-            updateCompensatedCommands();
-            deleteDuplicateSagaEndedEvents();
-            updateTransactionStatus();
+          try {
+            LOG.info("EventScanner schedule.");
+            // only pull the events when working in the master mode
+            if (nodeStatus.isMaster()) {
+              updateTimeoutStatus();
+              findTimeoutEvents();
+              abortTimeoutEvents();
+              saveUncompensatedEventsToCommands();
+              compensate();
+              updateCompensatedCommands();
+              deleteDuplicateSagaEndedEvents();
+              updateTransactionStatus();
+            }
+          }catch (Exception e){
+            LOG.error("EventScanner scheduler error:{} ",e.getMessage(),e);
           }
         },
-        0,
+        3000,
         eventPollingInterval,
         MILLISECONDS);
   }
@@ -180,8 +186,9 @@ public class EventScanner implements Runnable {
   }
 
   private void markGlobalTxEndWithEvent(TxEvent event) {
-    eventRepository.save(toSagaEndedEvent(event));
-    LOG.info("Marked end of transaction with globalTxId {}", event.globalTxId());
+      TxEvent txEvent = toSagaEndedEvent(event);
+      eventRepository.save(txEvent);
+    LOG.info("Marked end of transaction with globalTxId {} : {}", event.globalTxId(), txEvent);
   }
 
   private void markGlobalTxEndWithEvents(List<TxEvent> events) {
