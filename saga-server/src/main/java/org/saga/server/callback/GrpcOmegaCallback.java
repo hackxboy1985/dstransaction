@@ -3,7 +3,7 @@
 package org.saga.server.callback;
 
 import cn.ds.transaction.grpc.protocol.GrpcCompensateCommand;
-import org.saga.server.TxEvent;
+import org.saga.server.txevent.TxEvent;
 
 import com.google.protobuf.ByteString;
 

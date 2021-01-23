@@ -11,8 +11,8 @@ import javax.transaction.Transactional;
 
 import org.saga.server.command.Command;
 import org.saga.server.command.CommandRepository;
-import org.saga.server.TxEvent;
-import org.saga.server.TxEventEnvelopeRepository;
+import org.saga.server.txevent.TxEvent;
+import org.saga.server.txevent.TxEventEnvelopeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

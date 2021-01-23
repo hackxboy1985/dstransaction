@@ -13,6 +13,8 @@ import org.saga.server.command.CommandRepository;
 import org.saga.server.common.CommandEntityRepository;
 import org.saga.server.common.NodeStatus;
 import org.saga.server.txevent.TxConsistentService;
+import org.saga.server.txevent.TxEvent;
+import org.saga.server.txevent.TxEventEnvelopeRepository;
 import org.saga.server.txevent.TxEventRepository;
 import org.saga.server.txtimeout.TxTimeout;
 import org.saga.server.txtimeout.TxTimeoutEntityRepository;

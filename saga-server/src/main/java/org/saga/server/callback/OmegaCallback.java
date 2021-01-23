@@ -4,7 +4,7 @@ package org.saga.server.callback;
 
 
 import org.saga.server.common.CompensateAckType;
-import org.saga.server.TxEvent;
+import org.saga.server.txevent.TxEvent;
 
 public interface OmegaCallback {
   void compensate(TxEvent event);

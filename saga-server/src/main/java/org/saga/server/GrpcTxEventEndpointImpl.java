@@ -8,6 +8,7 @@ import io.grpc.stub.StreamObserver;
 import org.saga.server.callback.GrpcOmegaCallback;
 import org.saga.server.callback.OmegaCallback;
 import org.saga.server.txevent.TxConsistentService;
+import org.saga.server.txevent.TxEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

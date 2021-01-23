@@ -3,7 +3,6 @@
 package org.saga.server.txevent;
 
 import org.saga.common.EventType;
-import org.saga.server.TxEvent;
 
 import java.util.List;
 import java.util.Optional;

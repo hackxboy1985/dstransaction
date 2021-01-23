@@ -5,11 +5,11 @@
 //import com.fasterxml.jackson.annotation.JsonAutoDetect;
 //
 //import org.saga.server.txevent.TxEvent;
-//import org.saga.server.TxEventEnvelopeRepository;
+//import org.saga.server.txevent.TxEventEnvelopeRepository;
 //import org.saga.server.console.saga.model.Stats;
 //import org.saga.server.console.saga.model.Stats;
 //import org.saga.server.txevent.TxEvent;
-//import org.saga.server.TxEventEnvelopeRepository;
+//import org.saga.server.txevent.TxEventEnvelopeRepository;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //import org.springframework.data.domain.PageRequest;

@@ -6,7 +6,7 @@ import org.saga.server.callback.OmegaCallback;
 import org.saga.server.exception.AlphaException;
 import org.saga.server.exception.CompensateAckFailedException;
 import org.saga.server.exception.CompensateConnectException;
-import org.saga.server.TxEvent;
+import org.saga.server.txevent.TxEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

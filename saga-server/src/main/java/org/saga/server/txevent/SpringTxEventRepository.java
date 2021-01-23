@@ -7,8 +7,6 @@ import static org.saga.common.EventType.TxCompensatedEvent;
 import java.util.List;
 import java.util.Optional;
 
-import org.saga.server.TxEvent;
-import org.saga.server.TxEventEnvelopeRepository;
 import org.springframework.data.domain.PageRequest;
 
 public class SpringTxEventRepository implements TxEventRepository {

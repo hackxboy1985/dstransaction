@@ -1,6 +1,6 @@
 
 
-package org.saga.server;
+package org.saga.server.txevent;
 
 import javax.persistence.*;
 import java.util.Date;

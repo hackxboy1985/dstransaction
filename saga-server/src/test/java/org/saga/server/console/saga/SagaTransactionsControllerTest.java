@@ -3,7 +3,7 @@
 //package org.saga.server.console.saga;
 //
 //import org.saga.server.txevent.TxEvent;
-//import org.saga.server.TxEventEnvelopeRepository;
+//import org.saga.server.txevent.TxEventEnvelopeRepository;
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;

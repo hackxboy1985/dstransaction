@@ -3,7 +3,7 @@
 package org.saga.server.command;
 
 import org.saga.server.common.TaskStatus;
-import org.saga.server.TxEvent;
+import org.saga.server.txevent.TxEvent;
 
 import javax.persistence.*;
 import java.util.Date;

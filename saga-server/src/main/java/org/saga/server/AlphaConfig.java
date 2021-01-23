@@ -26,6 +26,7 @@ import org.saga.server.common.SpringCommandRepository;
 import org.saga.common.AlphaMetaKeys;
 import org.saga.server.txevent.SpringTxEventRepository;
 import org.saga.server.txevent.TxConsistentService;
+import org.saga.server.txevent.TxEventEnvelopeRepository;
 import org.saga.server.txevent.TxEventRepository;
 import org.saga.server.txtimeout.SpringTxTimeoutRepository;
 import org.saga.server.txtimeout.TxTimeoutEntityRepository;
@@ -44,8 +45,7 @@ import org.springframework.context.annotation.Configuration;
 
 import io.grpc.BindableService;
 
-//@EntityScan(basePackages = "org.saga.server")
-@EntityScan("org.saga.server")
+@EntityScan(basePackages = "org.saga.server")
 @Configuration
 public class AlphaConfig {
   private static final Logger LOG = LoggerFactory.getLogger(AlphaConfig.class);
@@ -67,12 +67,6 @@ public class AlphaConfig {
   @Autowired
   ApplicationEventPublisher applicationEventPublisher;
 
-//  @Bean(name="entityManagerFactory")
-//  public LocalSessionFactoryBean sessionFactory() {
-//    LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-//
-//    return sessionFactory;
-//  }
 
   @Bean("alphaEventBus")
   EventBus alphaEventBus() {
@@ -164,26 +158,6 @@ public class AlphaConfig {
     return bootstrap;
   }
 
-//  @Bean
-//  @ConditionalOnProperty(name= "alpha.feature.akka.enabled", havingValue = "true")
-//  ServerStartable serverStartableWithAkka(GrpcServerConfig serverConfig,
-//      Map<String, Map<String, OmegaCallback>> omegaCallbacks, @Autowired(required = false) GrpcTccEventService grpcTccEventService,
-//      @Qualifier("alphaEventBus") EventBus eventBus, ActorEventChannel actorEventChannel) throws IOException {
-//    ServerMeta serverMeta = ServerMeta.newBuilder()
-//        .putMeta(AlphaMetaKeys.AkkaEnabled.name(), String.valueOf(true)).build();
-//    List<BindableService> bindableServices = new ArrayList();
-//    bindableServices.add(new GrpcSagaEventService(actorEventChannel, omegaCallbacks, serverMeta));
-//    if (grpcTccEventService != null) {
-//      LOG.info("alpha.feature.tcc.enable=true, starting the TCC service.");
-//      bindableServices.add(grpcTccEventService);
-//    } else {
-//      LOG.info("alpha.feature.tcc.enable=false, the TCC service is disabled.");
-//    }
-//    ServerStartable bootstrap = new GrpcStartable(serverConfig, eventBus, bindableServices.toArray(new BindableService[0]));
-//    new Thread(bootstrap::start).start();
-//    LOG.info("alpha.feature.akka.enabled=true, starting the saga akka service.");
-//    return bootstrap;
-//  }
 
   @PostConstruct
   void init() {

@@ -1,10 +1,10 @@
 info:
   app:
-    name: ServiceComb Alpha Server
-    description: ServiceComb Alpha Server
+    name: Saga Server
+    description: Saga Server
 spring:
   application:
-    name: servicecomb-alpha-server
+    name: saga-server
   cloud:
     consul: # consul enabled configuration must be in this file
       enabled: false

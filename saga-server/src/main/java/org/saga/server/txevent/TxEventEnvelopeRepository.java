@@ -1,12 +1,13 @@
 
 
-package org.saga.server;
+package org.saga.server.txevent;
 
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.saga.server.txevent.TxEvent;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -48,7 +49,7 @@ public interface TxEventEnvelopeRepository extends CrudRepository<TxEvent, Long>
       + "  AND t.type = 'TxStartedEvent'")
   Optional<TxEvent> findFirstStartedEventByGlobalTxIdAndLocalTxId(String globalTxId, String localTxId);
 
-  @Query("SELECT DISTINCT new org.saga.server.TxEvent("
+  @Query("SELECT DISTINCT new org.saga.server.txevent.TxEvent("
       + "t.serviceName, t.instanceId, t.globalTxId, t.localTxId, t.parentTxId, "
       + "t.type, t.compensationMethod, t.payloads "
       + ") FROM TxEvent t "
