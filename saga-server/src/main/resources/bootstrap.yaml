@@ -1,0 +1,15 @@
+info:
+  app:
+    name: ServiceComb Alpha Server
+    description: ServiceComb Alpha Server
+spring:
+  application:
+    name: servicecomb-alpha-server
+  cloud:
+    consul: # consul enabled configuration must be in this file
+      enabled: false
+    zookeeper:
+      enabled: false
+    nacos:
+      discovery:
+        enabled: false

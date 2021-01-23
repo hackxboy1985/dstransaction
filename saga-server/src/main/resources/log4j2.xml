@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<Configuration status="WARN" monitorInterval="30" shutdownHook="disable">
+  <Properties>
+    <Property name="LOG_PATTERN">
+      %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
+    </Property>
+    <Property name="log-file-name">alpha-server</Property>
+  </Properties>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout>
+        <Pattern>${LOG_PATTERN}</Pattern>
+      </PatternLayout>
+    </Console>
+    <RollingFile name="FileAppender" fileName="logs/${sys:log-file-name}.log"
+      filePattern="logs/${sys:log-file-name}-%d{yyyy-MM-dd}-%i.log">
+      <PatternLayout>
+        <Pattern>${LOG_PATTERN}</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="100MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+    </RollingFile>
+    <Async name="ASYNC">
+      <AppenderRef ref="FileAppender"/>
+      <AppenderRef ref="Console"/>
+    </Async>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="ASYNC"/>
+    </Root>
+    <Logger name="org.apache.servicecomb.pack.alpha" level="DEBUG" />
+  </Loggers>
+
+</Configuration>

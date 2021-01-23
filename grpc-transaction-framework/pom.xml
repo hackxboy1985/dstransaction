@@ -12,7 +12,6 @@
 
   <artifactId>grpc-transaction-framework</artifactId>
   <name>grpc-transaction::framework</name>
-  <!--<groupId>cn.ds.transaction</groupId>-->
 
   <dependencies>
     <dependency>
