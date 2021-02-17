@@ -2,16 +2,16 @@
 
 package org.saga.server;
 
-import org.saga.common.AlphaMetaKeys;
+import org.saga.common.SagaServerMetaKeys;
 import org.saga.common.EventType;
 import cn.ds.transaction.grpc.protocol.*;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.StreamObserver;
-import org.saga.server.callback.OmegaCallback;
+import org.saga.server.callback.AgentCallback;
 import org.saga.server.command.CommandRepository;
-import org.saga.server.common.CommandEntityRepository;
+import org.saga.server.command.CommandEntityRepository;
 import org.saga.server.common.NodeStatus;
 import org.saga.server.txevent.TxConsistentService;
 import org.saga.server.txevent.TxEvent;
@@ -49,7 +49,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {AlphaApplication.class, AlphaConfig.class},
+@SpringBootTest(classes = {ServerApplication.class, ServerConfig.class},
     properties = {
         "alpha.server.host=0.0.0.0",
         "alpha.server.port=8090",
@@ -96,13 +96,13 @@ public class AlphaIntegrationTest {
   private TxTimeoutEntityRepository timeoutEntityRepository;
 
   @Autowired
-  private OmegaCallback omegaCallback;
+  private AgentCallback agentCallback;
 
   @Autowired
   private CommandEntityRepository commandEntityRepository;
 
   @Autowired
-  private Map<String, Map<String, OmegaCallback>> omegaCallbacks;
+  private Map<String, Map<String, AgentCallback>> agentCallbacks;
 
   @Autowired
   private TxConsistentService consistentService;
@@ -154,7 +154,7 @@ public class AlphaIntegrationTest {
   @Test
   public void serverMetaTest(){
     ServerMeta serverMeta = blockingStub.onGetServerMeta(serviceConfig);
-    assertEquals(Boolean.parseBoolean(serverMeta.getMetaMap().get(AlphaMetaKeys.AkkaEnabled.name())),false);
+    assertEquals(Boolean.parseBoolean(serverMeta.getMetaMap().get(SagaServerMetaKeys.AkkaEnabled.name())),false);
   }
 
   @Test
@@ -182,15 +182,15 @@ public class AlphaIntegrationTest {
   public void closeStreamOnDisconnected() {
     asyncStub.onConnected(compensateResponseObserver).onNext(serviceConfig);
 
-    await().atMost(1, SECONDS).until(() -> omegaCallbacks.containsKey(serviceConfig.getServiceName()));
+    await().atMost(1, SECONDS).until(() -> agentCallbacks.containsKey(serviceConfig.getServiceName()));
 
     assertThat(
-        omegaCallbacks.get(serviceConfig.getServiceName()).get(serviceConfig.getInstanceId()),
+        agentCallbacks.get(serviceConfig.getServiceName()).get(serviceConfig.getInstanceId()),
         is(notNullValue()));
 
     blockingStub.onDisconnected(serviceConfig);
     assertThat(
-        omegaCallbacks.get(serviceConfig.getServiceName()).containsKey(serviceConfig.getInstanceId()),
+        agentCallbacks.get(serviceConfig.getServiceName()).containsKey(serviceConfig.getInstanceId()),
         is(false));
 
     await().atMost(1, SECONDS).until(compensateResponseObserver::isCompleted);
@@ -199,19 +199,19 @@ public class AlphaIntegrationTest {
   @Test
   public void closeStreamOfDisconnectedClientOnly() {
     asyncStub.onConnected(compensateResponseObserver).onNext(serviceConfig);
-    await().atMost(1, SECONDS).until(() -> omegaCallbacks.containsKey(serviceConfig.getServiceName()));
+    await().atMost(1, SECONDS).until(() -> agentCallbacks.containsKey(serviceConfig.getServiceName()));
 
     GrpcServiceConfig anotherServiceConfig = someServiceConfig();
     CompensationStreamObserver anotherResponseObserver = new CompensationStreamObserver();
     TxEventServiceGrpc.TxEventServiceStub otherAsyncStub = TxEventServiceGrpc.newStub(clientChannel);
     otherAsyncStub.onConnected(anotherResponseObserver).onNext(anotherServiceConfig);
 
-    await().atMost(1, SECONDS).until(() -> omegaCallbacks.containsKey(anotherServiceConfig.getServiceName()));
+    await().atMost(1, SECONDS).until(() -> agentCallbacks.containsKey(anotherServiceConfig.getServiceName()));
 
     blockingStub.onDisconnected(serviceConfig);
 
     assertThat(
-        omegaCallbacks.get(anotherServiceConfig.getServiceName()).containsKey(anotherServiceConfig.getInstanceId()),
+        agentCallbacks.get(anotherServiceConfig.getServiceName()).containsKey(anotherServiceConfig.getInstanceId()),
         is(true));
 
     assertThat(anotherResponseObserver.isCompleted(), is(false));
@@ -225,11 +225,11 @@ public class AlphaIntegrationTest {
     blockingStub.onTxEvent(someGrpcEvent(TxStartedEvent));
     blockingStub.onTxEvent(someGrpcEvent(TxEndedEvent));
 
-    omegaCallbacks.get(serviceName).get(instanceId).disconnect();
+    agentCallbacks.get(serviceName).get(instanceId).disconnect();
 
     consistentService.handle(someTxAbortEvent(serviceName, instanceId));
 
-    await().atMost(1, SECONDS).until(() -> omegaCallbacks.get(serviceName).isEmpty());
+    await().atMost(1, SECONDS).until(() -> agentCallbacks.get(serviceName).isEmpty());
   }
 
   @Test
@@ -598,6 +598,6 @@ public class AlphaIntegrationTest {
         eventRepository,
         commandRepository,
         timeoutRepository,
-        omegaCallback, 1, new NodeStatus(NodeStatus.TypeEnum.MASTER)).run();
+            agentCallback, 1, new NodeStatus(NodeStatus.TypeEnum.MASTER)).run();
   }
 }

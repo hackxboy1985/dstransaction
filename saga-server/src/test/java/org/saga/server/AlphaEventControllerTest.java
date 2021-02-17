@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(AlphaEventController.class)
+@WebMvcTest(ServerEventController.class)
 @ActiveProfiles("test")
 public class AlphaEventControllerTest {
   private final TxEvent someEvent = someEvent();

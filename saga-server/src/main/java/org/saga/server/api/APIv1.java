@@ -3,14 +3,13 @@
 package org.saga.server.api;
 
 
-import org.saga.server.metrics.AlphaMetrics;
-import org.saga.server.metrics.AlphaMetrics;
+import org.saga.server.metrics.ServerMetrics;
 
 import java.util.Map;
 
 public interface APIv1 {
 
-    AlphaMetrics getMetrics();
+    ServerMetrics getMetrics();
 
 //  GlobalTransaction getTransactionByGlobalTxId(String globalTxId)
 //      throws Exception;

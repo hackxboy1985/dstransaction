@@ -9,11 +9,11 @@ import com.google.protobuf.ByteString;
 
 import io.grpc.stub.StreamObserver;
 
-public class GrpcOmegaCallback implements OmegaCallback {
+public class GrpcAgentCallback implements AgentCallback {
 
   private final StreamObserver<GrpcCompensateCommand> observer;
 
-  public GrpcOmegaCallback(StreamObserver<GrpcCompensateCommand> observer) {
+  public GrpcAgentCallback(StreamObserver<GrpcCompensateCommand> observer) {
     this.observer = observer;
   }
 

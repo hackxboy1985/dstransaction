@@ -1,6 +1,6 @@
 
 
-package org.saga.server.common;
+package org.saga.server.command;
 
 import java.lang.invoke.MethodHandles;
 import java.util.LinkedHashMap;
@@ -10,7 +10,9 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.saga.server.command.Command;
+import org.saga.server.command.CommandEntityRepository;
 import org.saga.server.command.CommandRepository;
+import org.saga.server.common.TaskStatus;
 import org.saga.server.txevent.TxEvent;
 import org.saga.server.txevent.TxEventEnvelopeRepository;
 import org.slf4j.Logger;

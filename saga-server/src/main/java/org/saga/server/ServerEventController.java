@@ -25,12 +25,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 @RequestMapping("/saga")
 @Profile("test")
 // Only export this Controller for test
-class AlphaEventController {
+class ServerEventController {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final TxEventEnvelopeRepository eventRepository;
 
-  AlphaEventController(TxEventEnvelopeRepository eventRepository) {
+  ServerEventController(TxEventEnvelopeRepository eventRepository) {
     this.eventRepository = eventRepository;
   }
 

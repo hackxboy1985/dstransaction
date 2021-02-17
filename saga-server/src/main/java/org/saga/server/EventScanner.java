@@ -2,7 +2,7 @@
 
 package org.saga.server;
 
-import org.saga.server.callback.OmegaCallback;
+import org.saga.server.callback.AgentCallback;
 import org.saga.server.command.Command;
 import org.saga.server.command.CommandRepository;
 import org.saga.server.common.NodeStatus;
@@ -34,7 +34,7 @@ public class EventScanner implements Runnable {
 
   private final TxTimeoutRepository timeoutRepository;
 
-  private final OmegaCallback omegaCallback;
+  private final AgentCallback agentCallback;
 
   private final int eventPollingInterval;
 
@@ -48,13 +48,13 @@ public class EventScanner implements Runnable {
       TxEventRepository eventRepository,
       CommandRepository commandRepository,
       TxTimeoutRepository timeoutRepository,
-      OmegaCallback omegaCallback,
+      AgentCallback agentCallback,
       int eventPollingInterval,NodeStatus nodeStatus) {
     this.scheduler = scheduler;
     this.eventRepository = eventRepository;
     this.commandRepository = commandRepository;
     this.timeoutRepository = timeoutRepository;
-    this.omegaCallback = omegaCallback;
+    this.agentCallback = agentCallback;
 //    this.eventPollingInterval = eventPollingInterval;
     this.eventPollingInterval = 10000;
     this.nodeStatus = nodeStatus;
@@ -130,7 +130,7 @@ public class EventScanner implements Runnable {
                       command.globalTxId(),
                       command.localTxId());
 
-              omegaCallback.compensate(txStartedEventOf(command));
+              agentCallback.compensate(txStartedEventOf(command));
             });
   }
 
@@ -171,7 +171,7 @@ public class EventScanner implements Runnable {
 
       if (timeout.type().equals(TxStartedEvent.name())) {
         eventRepository.findTxStartedEvent(timeout.globalTxId(), timeout.localTxId())
-            .ifPresent(omegaCallback::compensate);
+            .ifPresent(agentCallback::compensate);
       }
     });
   }

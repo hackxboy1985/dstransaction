@@ -16,14 +16,14 @@ import javax.annotation.PreDestroy;
 
 import cn.ds.transaction.grpc.protocol.ServerMeta;
 import com.google.common.eventbus.EventBus;
-import org.saga.server.callback.OmegaCallback;
-import org.saga.server.callback.PushBackOmegaCallback;
+import org.saga.server.callback.AgentCallback;
+import org.saga.server.callback.PushBackAgentCallback;
 import org.saga.server.command.CommandRepository;
-import org.saga.server.command.CompositeOmegaCallback;
-import org.saga.server.common.CommandEntityRepository;
+import org.saga.server.callback.CompositeAgentCallback;
+import org.saga.server.command.CommandEntityRepository;
 import org.saga.server.common.NodeStatus;
-import org.saga.server.common.SpringCommandRepository;
-import org.saga.common.AlphaMetaKeys;
+import org.saga.server.command.SpringCommandRepository;
+import org.saga.common.SagaServerMetaKeys;
 import org.saga.server.txevent.SpringTxEventRepository;
 import org.saga.server.txevent.TxConsistentService;
 import org.saga.server.txevent.TxEventEnvelopeRepository;
@@ -47,8 +47,8 @@ import io.grpc.BindableService;
 
 @EntityScan(basePackages = "org.saga.server")
 @Configuration
-public class AlphaConfig {
-  private static final Logger LOG = LoggerFactory.getLogger(AlphaConfig.class);
+public class ServerConfig {
+  private static final Logger LOG = LoggerFactory.getLogger(ServerConfig.class);
   private final BlockingQueue<Runnable> pendingCompensations = new LinkedBlockingQueue<>();
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -74,13 +74,13 @@ public class AlphaConfig {
   }
 
   @Bean
-  Map<String, Map<String, OmegaCallback>> omegaCallbacks() {
+  Map<String, Map<String, AgentCallback>> agentCallbacks() {
     return new ConcurrentHashMap<>();
   }
 
   @Bean
-  OmegaCallback omegaCallback(Map<String, Map<String, OmegaCallback>> callbacks) {
-    return new PushBackOmegaCallback(pendingCompensations, new CompositeOmegaCallback(callbacks));
+  AgentCallback agentCallback(Map<String, Map<String, AgentCallback>> callbacks) {
+    return new PushBackAgentCallback(pendingCompensations, new CompositeAgentCallback(callbacks));
   }
   
   @Bean
@@ -120,12 +120,12 @@ public class AlphaConfig {
       TxEventRepository eventRepository,
       CommandRepository commandRepository,
       TxTimeoutRepository timeoutRepository,
-      OmegaCallback omegaCallback,
+      AgentCallback agentCallback,
       NodeStatus nodeStatus) {
         if (eventScannerEnabled) {
           new EventScanner(scheduler,
               eventRepository, commandRepository, timeoutRepository,
-              omegaCallback, eventPollingInterval, nodeStatus).run();
+              agentCallback, eventPollingInterval, nodeStatus).run();
           LOG.info("Starting the EventScanner.");
           }
         TxConsistentService consistentService = new TxConsistentService(eventRepository);
@@ -136,7 +136,7 @@ public class AlphaConfig {
    * 缺省使用此配置 当没有alpha.feature.akka.enabled配置时
    * @param serverConfig
    * @param txConsistentService
-   * @param omegaCallbacks
+   * @param agentCallbacks
    * @param eventBus
    * @return
    * @throws IOException
@@ -144,12 +144,12 @@ public class AlphaConfig {
   @Bean()
   @ConditionalOnProperty(name = "alpha.feature.akka.enabled", havingValue = "false", matchIfMissing = true)
   ServerStartable serverStartable(GrpcServerConfig serverConfig, TxConsistentService txConsistentService,
-      Map<String, Map<String, OmegaCallback>> omegaCallbacks,
+      Map<String, Map<String, AgentCallback>> agentCallbacks,
       @Qualifier("alphaEventBus") EventBus eventBus) throws IOException {
     ServerMeta serverMeta = ServerMeta.newBuilder()
-        .putMeta(AlphaMetaKeys.AkkaEnabled.name(), String.valueOf(false)).build();
+        .putMeta(SagaServerMetaKeys.AkkaEnabled.name(), String.valueOf(false)).build();
     List<BindableService> bindableServices = new ArrayList();
-    bindableServices.add(new GrpcTxEventEndpointImpl(txConsistentService, omegaCallbacks, serverMeta));
+    bindableServices.add(new GrpcTxEventEndpointImpl(txConsistentService, agentCallbacks, serverMeta));
 
     ServerStartable bootstrap = new GrpcStartable(serverConfig, eventBus,
         bindableServices.toArray(new BindableService[0]));

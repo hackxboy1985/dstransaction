@@ -5,7 +5,7 @@ package org.saga.server.metrics;
 
 import org.saga.server.common.NodeStatus.TypeEnum;
 
-public class AlphaMetrics {
+public class ServerMetrics {
   private MetricsBean metrics;
   private TypeEnum nodeType;
 

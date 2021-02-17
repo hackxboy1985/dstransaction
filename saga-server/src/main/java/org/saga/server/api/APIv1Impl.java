@@ -2,11 +2,9 @@
 
 package org.saga.server.api;
 
-import java.util.List;
 import java.util.Map;
-import org.saga.server.metrics.AlphaMetrics;
-import org.saga.server.metrics.AlphaMetricsEndpoint;
-import org.saga.server.metrics.AlphaMetrics;
+import org.saga.server.metrics.ServerMetrics;
+import org.saga.server.metrics.ServerMetricsEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,13 +12,13 @@ import org.springframework.stereotype.Component;
 public class APIv1Impl implements APIv1 {
 
   @Autowired
-  AlphaMetricsEndpoint alphaMetricsEndpoint;
+  ServerMetricsEndpoint alphaMetricsEndpoint;
 
 //  @Autowired(required = false)
 //  TransactionRepository transactionRepository;
 
-  public AlphaMetrics getMetrics() {
-    AlphaMetrics alphaMetrics = new AlphaMetrics();
+  public ServerMetrics getMetrics() {
+    ServerMetrics alphaMetrics = new ServerMetrics();
     alphaMetrics.setMetrics(alphaMetricsEndpoint.getMetrics());
     alphaMetrics.setNodeType(alphaMetricsEndpoint.getNodeType());
     return alphaMetrics;

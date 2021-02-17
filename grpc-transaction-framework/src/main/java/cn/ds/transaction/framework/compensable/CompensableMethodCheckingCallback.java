@@ -21,9 +21,6 @@ class CompensableMethodCheckingCallback extends MethodCheckingCallback {
     if (!method.isAnnotationPresent(Compensable.class)) {
       return;
     }
-//    if(method.getName().contains("say")){
-//      System.out.println("Compensable method="+method.getName());
-//    }
     Compensable compensable = method.getAnnotation(Compensable.class);
     String compensationMethod = compensable.compensationMethod();
     // we don't support the retries number below -1.

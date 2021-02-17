@@ -1,6 +1,6 @@
 
 
-package org.saga.server.common;
+package org.saga.server.command;
 
 import java.util.List;
 

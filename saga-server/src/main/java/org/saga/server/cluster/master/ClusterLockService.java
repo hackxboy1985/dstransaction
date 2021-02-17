@@ -4,14 +4,12 @@ package org.saga.server.cluster.master;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.saga.server.AlphaConfig;
+import org.saga.server.ServerConfig;
 import org.saga.server.cluster.master.provider.Lock;
 import org.saga.server.cluster.master.provider.LockProvider;
 import org.saga.server.cluster.master.provider.jdbc.jpa.MasterLock;
 import org.saga.server.common.NodeStatus;
 import org.saga.server.event.GrpcStartableStartedEvent;
-import org.saga.server.cluster.master.provider.Lock;
-import org.saga.server.cluster.master.provider.LockProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +46,7 @@ import java.util.Optional;
 @Component
 @ConditionalOnProperty(name = "alpha.cluster.master.enabled", havingValue = "true")
 @EnableScheduling
-@AutoConfigureAfter(AlphaConfig.class)
+@AutoConfigureAfter(ServerConfig.class)
 public class ClusterLockService implements ApplicationListener<ApplicationReadyEvent> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("ssl")
-@SpringBootTest(classes = {AlphaApplication.class, AlphaConfig.class},
+@SpringBootTest(classes = {ServerApplication.class, ServerConfig.class},
     properties = {
         "alpha.server.host=0.0.0.0",
         "alpha.server.port=8092",

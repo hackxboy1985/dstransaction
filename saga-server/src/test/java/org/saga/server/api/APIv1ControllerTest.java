@@ -2,19 +2,14 @@
 
 package org.saga.server.api;
 
-import org.saga.server.AlphaApplication;
-import org.saga.server.AlphaConfig;
+import org.saga.server.ServerApplication;
+import org.saga.server.ServerConfig;
 import org.saga.server.common.NodeStatus;
-import org.saga.server.metrics.AlphaMetricsEndpoint;
+import org.saga.server.metrics.ServerMetricsEndpoint;
 import org.saga.server.metrics.MetricsBean;
 import org.saga.server.metrics.MetricsService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.saga.server.AlphaApplication;
-import org.saga.server.AlphaConfig;
-import org.saga.server.common.NodeStatus;
-import org.saga.server.metrics.MetricsBean;
-import org.saga.server.metrics.MetricsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,14 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest(classes = {AlphaApplication.class, AlphaConfig.class})
+@SpringBootTest(classes = {ServerApplication.class, ServerConfig.class})
 public class APIv1ControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @Autowired
-  AlphaMetricsEndpoint alphaMetricsEndpoint;
+  ServerMetricsEndpoint alphaMetricsEndpoint;
 
   @MockBean
   MetricsService metricsService;

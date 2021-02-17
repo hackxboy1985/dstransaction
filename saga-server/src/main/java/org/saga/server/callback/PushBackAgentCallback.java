@@ -1,5 +1,3 @@
-
-
 package org.saga.server.callback;
 
 import org.saga.server.txevent.TxEvent;
@@ -12,13 +10,13 @@ import java.util.concurrent.BlockingQueue;
 import static org.saga.common.EventType.TxCompensateEvent;
 
 
-public class PushBackOmegaCallback implements OmegaCallback {
+public class PushBackAgentCallback implements AgentCallback {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final BlockingQueue<Runnable> pendingCompensations;
-  private final OmegaCallback underlying;
+  private final AgentCallback underlying;
 
-  public PushBackOmegaCallback(BlockingQueue<Runnable> pendingCompensations, OmegaCallback underlying) {
+  public PushBackAgentCallback(BlockingQueue<Runnable> pendingCompensations, AgentCallback underlying) {
     this.pendingCompensations = pendingCompensations;
     this.underlying = underlying;
   }

@@ -2,8 +2,8 @@
 
 package org.saga.server.cluster.master;
 
-import org.saga.server.AlphaApplication;
-import org.saga.server.AlphaConfig;
+import org.saga.server.ServerApplication;
+import org.saga.server.ServerConfig;
 import org.saga.server.cluster.master.provider.jdbc.MasterLockEntityRepository;
 import org.saga.server.cluster.master.provider.jdbc.jpa.MasterLock;
 import org.saga.server.cluster.master.provider.jdbc.jpa.MasterLockRepository;
@@ -11,9 +11,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.saga.server.AlphaApplication;
-import org.saga.server.AlphaConfig;
-import org.saga.server.cluster.master.provider.jdbc.MasterLockEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-@SpringBootTest(classes = {AlphaApplication.class, AlphaConfig.class},
+@SpringBootTest(classes = {ServerApplication.class, ServerConfig.class},
     properties = {
         "alpha.cluster.master.enabled=true",
         "alpha.server.host=0.0.0.0",

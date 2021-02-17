@@ -2,17 +2,13 @@
 
 package org.saga.server.api;
 
-import java.util.List;
 import java.util.Map;
 
-import org.saga.server.metrics.AlphaMetrics;
-import org.saga.server.metrics.AlphaMetrics;
+import org.saga.server.metrics.ServerMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,7 +19,7 @@ public class APIv1Controller {
   APIv1Impl APIv1Impl;
 
   @GetMapping(value = "/metrics")
-  public ResponseEntity<AlphaMetrics> metrics() {
+  public ResponseEntity<ServerMetrics> metrics() {
     return ResponseEntity.ok(APIv1Impl.getMetrics());
   }
 

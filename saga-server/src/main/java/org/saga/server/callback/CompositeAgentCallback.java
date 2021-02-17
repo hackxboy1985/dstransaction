@@ -1,8 +1,7 @@
 
 
-package org.saga.server.command;
+package org.saga.server.callback;
 
-import org.saga.server.callback.OmegaCallback;
 import org.saga.server.exception.AlphaException;
 import org.saga.server.exception.CompensateAckFailedException;
 import org.saga.server.exception.CompensateConnectException;
@@ -17,40 +16,40 @@ import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 
-public class CompositeOmegaCallback implements OmegaCallback {
+public class CompositeAgentCallback implements AgentCallback {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final Map<String, Map<String, OmegaCallback>> callbacks;
+  private final Map<String, Map<String, AgentCallback>> callbacks;
 
-  public CompositeOmegaCallback(Map<String, Map<String, OmegaCallback>> callbacks) {
+  public CompositeAgentCallback(Map<String, Map<String, AgentCallback>> callbacks) {
     this.callbacks = callbacks;
   }
 
   @Override
   public void compensate(TxEvent event) {
-    Map<String, OmegaCallback> serviceCallbacks = callbacks.getOrDefault(event.serviceName(), emptyMap());
+    Map<String, AgentCallback> serviceCallbacks = callbacks.getOrDefault(event.serviceName(), emptyMap());
 
-    OmegaCallback omegaCallback = serviceCallbacks.get(event.instanceId());
-    if (omegaCallback == null) {
+    AgentCallback agentCallback = serviceCallbacks.get(event.instanceId());
+    if (agentCallback == null) {
       LOG.info("Cannot find the service with the instanceId {}, call the other instance.", event.instanceId());
       // TODO extract an Interface to let user define the serviceCallback instance pick strategy
-      Iterator<OmegaCallback> iterator = new ArrayList<>(serviceCallbacks.values()).iterator();
+      Iterator<AgentCallback> iterator = new ArrayList<>(serviceCallbacks.values()).iterator();
       if(iterator.hasNext()) {
-        omegaCallback = iterator.next();
+        agentCallback = iterator.next();
       }
     }
-    if(omegaCallback==null){
+    if(agentCallback==null){
       throw new AlphaException("Compensate error, No such omega callback found for service " + event.serviceName());
     }
 
     try {
-      omegaCallback.compensate(event);
+      agentCallback.compensate(event);
     } catch (CompensateConnectException e) {
-      serviceCallbacks.values().remove(omegaCallback);
+      serviceCallbacks.values().remove(agentCallback);
       throw e;
     } catch (CompensateAckFailedException e) {
       throw e;
     } catch (Exception e) {
-      serviceCallbacks.values().remove(omegaCallback);
+      serviceCallbacks.values().remove(agentCallback);
       throw e;
     }
   }
