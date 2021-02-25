@@ -19,7 +19,7 @@ public class SbRpcConsumerApplicationTests {
 
         for(int i = 0;i<100;i++) {
             long start = System.currentTimeMillis();
-            String ret = helloRpcService.sayHello("hello");
+            String ret = helloRpcService.sayHello("hello", false);
             System.out.println("请求耗时:" + (System.currentTimeMillis() - start) + ", return=" + ret);
         }
     }

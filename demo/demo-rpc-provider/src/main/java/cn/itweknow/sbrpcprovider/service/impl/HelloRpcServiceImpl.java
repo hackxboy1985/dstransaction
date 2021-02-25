@@ -33,16 +33,18 @@ public class HelloRpcServiceImpl implements HelloRpcService {
 
     @Override
     @Compensable(compensationMethod="sayHelloRollback")
-    public String sayHello(String msg) {
-        throw new RuntimeException("exception");
-//        return "Hello RPC!" + msg;
+    public String sayHello(String msg, boolean ex) {
+        if (ex) {
+            throw new RuntimeException("exception");
+        }
+        return "Hello RPC!" + msg;
     }
 
     public String sayHiRollback(String msg) {
-        System.out.println("sayHiRollback excute!!");
-        return "hi Rollback OK! " + msg;
+        System.out.println("sayHi Rollback excute!!");
+        return "sayhi Rollback OK! " + msg;
     }
-    public String sayHelloRollback(String msg) {
-        return "hello Rollback OK! " + msg;
+    public String sayHelloRollback(String msg, boolean ex) {
+        return "sayhello Rollback OK! " + msg;
     }
 }

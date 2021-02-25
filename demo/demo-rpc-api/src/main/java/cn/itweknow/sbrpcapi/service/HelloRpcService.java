@@ -13,6 +13,6 @@ public interface HelloRpcService {
 
     String sayHiForward(String msg);
 
-    String sayHello(String msg);
+    String sayHello(String msg, boolean ex);
 
 }

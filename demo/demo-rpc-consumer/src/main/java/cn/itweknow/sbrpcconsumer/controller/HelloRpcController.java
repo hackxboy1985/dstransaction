@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/hello-rpc")
+@RequestMapping("/rpc")
 public class HelloRpcController {
 
 
@@ -52,7 +52,43 @@ public class HelloRpcController {
         String ret = "";
         try {
 
-            ret = helloRpcService.sayHello(msg);
+            ret = helloRpcService.sayHello(msg,false);
+            System.out.println("请求耗时:" + (System.currentTimeMillis() - start));
+            return ret;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+    //2子事务，成功场景
+    @SagaStart
+    @GetMapping("/demo2normal")
+    public String h2(@RequestParam String msg) {
+        System.out.println("请求h2 start");
+        long start = System.currentTimeMillis();
+        String ret = "";
+        try {
+            ret = helloRpcService.sayHi(msg);
+            ret = helloRpcService.sayHello(msg,false);
+            System.out.println("请求耗时:" + (System.currentTimeMillis() - start));
+            return ret;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+    //2子事务，第2子处事抛异常
+    @SagaStart
+    @GetMapping("/demo2exception")
+    public String h2ex(@RequestParam String msg) {
+        System.out.println("请求h2 start");
+        long start = System.currentTimeMillis();
+        String ret = "";
+        try {
+            ret = helloRpcService.sayHi(msg);
+            ret = helloRpcService.sayHello(msg,true);
             System.out.println("请求耗时:" + (System.currentTimeMillis() - start));
             return ret;
         }catch (Exception e){
