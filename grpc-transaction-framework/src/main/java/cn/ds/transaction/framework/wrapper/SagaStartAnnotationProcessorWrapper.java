@@ -32,9 +32,11 @@ public class SagaStartAnnotationProcessorWrapper {
       Object result = joinPoint.proceed();
       if (sagaStart.autoClose()) {
         sagaStartAnnotationProcessor.postIntercept(context.globalTxId());
-        LOG.debug("Saga-Transaction::Transaction with context {} has finished.", context);
+        if (LOG.isDebugEnabled())
+          LOG.debug("Saga-Transaction::Transaction with context {} has finished.", context);
       } else {
-        LOG.debug("Saga-Transaction::Transaction with context {} is not finished in the SagaStarted annotated method.", context);
+        if (LOG.isDebugEnabled())
+          LOG.debug("Saga-Transaction::Transaction with context {} is not finished in the SagaStarted annotated method.", context);
       }
       return result;
     } catch (Throwable throwable) {

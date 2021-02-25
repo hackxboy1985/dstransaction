@@ -29,6 +29,8 @@ public class TxConsistentService {
       return false;
     }
 
+    LOG.info("Transaction event {} receive, context with globalTxId {} localTxId {}",
+            event.type(), event.globalTxId(),event.localTxId());
     eventRepository.save(event);
 
     return true;

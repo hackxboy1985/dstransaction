@@ -54,7 +54,7 @@ class GrpcTxEventEndpointImpl extends TxEventServiceImplBase {
 
       @Override
       public void onCompleted() {
-        LOG.info("Omega client called method onCompleted of GrpcServiceConfig");
+        LOG.info("Agent client called method onCompleted of GrpcServiceConfig");
       }
     };
   }

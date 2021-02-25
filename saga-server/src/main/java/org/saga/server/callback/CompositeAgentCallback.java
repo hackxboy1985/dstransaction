@@ -38,7 +38,7 @@ public class CompositeAgentCallback implements AgentCallback {
       }
     }
     if(agentCallback==null){
-      throw new AlphaException("Compensate error, No such omega callback found for service " + event.serviceName());
+      throw new AlphaException("Compensate error, No such agent callback found for service " + event.serviceName());
     }
 
     try {

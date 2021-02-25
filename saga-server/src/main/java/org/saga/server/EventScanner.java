@@ -55,8 +55,8 @@ public class EventScanner implements Runnable {
     this.commandRepository = commandRepository;
     this.timeoutRepository = timeoutRepository;
     this.agentCallback = agentCallback;
-//    this.eventPollingInterval = eventPollingInterval;
-    this.eventPollingInterval = 10000;
+    this.eventPollingInterval = eventPollingInterval;
+//    this.eventPollingInterval = 10000;
     this.nodeStatus = nodeStatus;
   }
 
