@@ -5,7 +5,7 @@ package org.saga.server.actuate.endpoint;
 
 import org.saga.server.common.NodeStatus;
 
-public class AlphaStatus {
+public class SagaSvrStatus {
   private NodeStatus.TypeEnum nodeType;
 
   public NodeStatus.TypeEnum getNodeType() {

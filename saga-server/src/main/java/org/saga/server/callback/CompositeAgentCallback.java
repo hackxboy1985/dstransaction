@@ -2,7 +2,7 @@
 
 package org.saga.server.callback;
 
-import org.saga.server.exception.AlphaException;
+import org.saga.server.exception.SagaSvrException;
 import org.saga.server.exception.CompensateAckFailedException;
 import org.saga.server.exception.CompensateConnectException;
 import org.saga.server.txevent.TxEvent;
@@ -38,7 +38,7 @@ public class CompositeAgentCallback implements AgentCallback {
       }
     }
     if(agentCallback==null){
-      throw new AlphaException("Compensate error, No such agent callback found for service " + event.serviceName());
+      throw new SagaSvrException("Compensate error, No such agent callback found for service " + event.serviceName());
     }
 
     try {

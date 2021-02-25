@@ -26,7 +26,7 @@ import java.util.Arrays;
         "alpha.event.pollingInterval=1",
         "spring.main.allow-bean-definition-overriding=true"
     })
-public class AlphaIntegrationWithSSLTest extends AlphaIntegrationTest {
+public class SagaIntegrationWithSSLTest extends SagaIntegrationTest {
   private static final int port = 8092;
 
   @BeforeClass
@@ -38,7 +38,7 @@ public class AlphaIntegrationWithSSLTest extends AlphaIntegrationTest {
   }
 
   private static SslContext getSslContext(){
-    ClassLoader classLoader = AlphaIntegrationWithSSLTest.class.getClassLoader();
+    ClassLoader classLoader = SagaIntegrationWithSSLTest.class.getClassLoader();
     SslContext sslContext = null;
     try {
       sslContext = GrpcSslContexts.forClient().sslProvider(SslProvider.OPENSSL)

@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(ServerEventController.class)
 @ActiveProfiles("test")
-public class AlphaEventControllerTest {
+public class SagaEventControllerTest {
   private final TxEvent someEvent = someEvent();
 
   @Autowired

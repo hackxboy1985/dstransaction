@@ -56,7 +56,7 @@ import static org.junit.Assert.assertThat;
         "alpha.event.pollingInterval=1",
         "spring.main.allow-bean-definition-overriding=true"
        })
-public class AlphaIntegrationTest {
+public class SagaIntegrationTest {
   private static final int port = 8090;
 
   protected static ManagedChannel clientChannel;
