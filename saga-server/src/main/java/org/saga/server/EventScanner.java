@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Consumer;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.saga.common.EventType.*;
@@ -74,16 +75,24 @@ public class EventScanner implements Runnable {
     scheduler.scheduleWithFixedDelay(
         () -> {
           try {
-            LOG.info("EventScanner schedule.");
+            //LOG.info("EventScanner schedule.");
             // only pull the events when working in the master mode
             if (nodeStatus.isMaster()) {
+              //更新超时事件状态
               updateTimeoutStatus();
+              //将超时事务查询出，转化成超时事务模型入库（TxTimeout表)
               findTimeoutEvents();
+              //将超时事务添加abort事件，进行补偿
               abortTimeoutEvents();
+              //将未补偿的子事务查询出来，转化成补偿命令模型入库(command表)
               saveUncompensatedEventsToCommands();
+              //根据command补偿命令表发起补偿
               compensate();
+              //检测补偿事件，并更新补偿命令状态
               updateCompensatedCommands();
+              //删除重复的SagaEnded事件
               deleteDuplicateSagaEndedEvents();
+              //更新事务状态
               updateTransactionStatus();
             }
           }catch (Exception e){
@@ -95,6 +104,9 @@ public class EventScanner implements Runnable {
         MILLISECONDS);
   }
 
+  /**
+   * 查询超时事件
+   */
   private void findTimeoutEvents() {
     eventRepository.findTimeoutEvents()
         .forEach(event -> {
@@ -120,7 +132,7 @@ public class EventScanner implements Runnable {
   }
 
   /**
-   * 查询未完成的command补偿命令，调用实例进行补偿
+   * 查询未完成的command补偿命令，调用回调实例进行补偿
    */
   private void compensate() {
 
@@ -154,6 +166,9 @@ public class EventScanner implements Runnable {
     }
   }
 
+  /**
+   * 更新补偿过的子事务的命令表状态，并结束Saga事务
+   */
   private void updateCompensationStatus(TxEvent event) {
     commandRepository.markCommandAsDone(event.globalTxId(), event.localTxId());
     LOG.info("Transaction with globalTxId {} and localTxId {} was compensated",
@@ -163,6 +178,9 @@ public class EventScanner implements Runnable {
     markSagaEnded(event);
   }
 
+  /**
+   * 将超时事务添加abort事件
+   */
   private void abortTimeoutEvents() {
     timeoutRepository.findFirstTimeout().forEach(timeout -> {
       LOG.info("Found timeout event {} to abort", timeout);
@@ -180,6 +198,10 @@ public class EventScanner implements Runnable {
     eventRepository.findFirstAbortedGlobalTransaction().ifPresent(this::markGlobalTxEndWithEvents);
   }
 
+  /**
+   * 结束Saga事务
+   * @param event
+   */
   private void markSagaEnded(TxEvent event) {
     if (commandRepository.findUncompletedCommands(event.globalTxId()).isEmpty()) {
       markGlobalTxEndWithEvent(event);

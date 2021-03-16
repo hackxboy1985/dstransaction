@@ -16,6 +16,8 @@ import org.springframework.data.repository.CrudRepository;
 public interface TxEventEnvelopeRepository extends CrudRepository<TxEvent, Long> {
   List<TxEvent> findByGlobalTxId(String globalTxId);
 
+  //存在txaborted事件，但不存在txended或sagaended事件，且不存在该子事务的后续事件(localTxId相同但时间比aborted晚的事件),
+  //且该子事务的started事件不是向前重试（补偿非重试）
   @Query("SELECT t FROM TxEvent t "
       + "WHERE t.type = 'TxAbortedEvent' AND NOT EXISTS( "
       + "  SELECT t1.globalTxId FROM TxEvent t1"

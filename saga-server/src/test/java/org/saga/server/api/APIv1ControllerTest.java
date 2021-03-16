@@ -35,7 +35,7 @@ public class APIv1ControllerTest {
   private MockMvc mockMvc;
 
   @Autowired
-  ServerMetricsEndpoint alphaMetricsEndpoint;
+  ServerMetricsEndpoint serverMetricsEndpoint;
 
   @MockBean
   MetricsService metricsService;
@@ -67,7 +67,7 @@ public class APIv1ControllerTest {
     metricsBean.doSagaAvgTime(5);
     when(metricsService.metrics()).thenReturn(metricsBean);
     when(nodeStatus.getTypeEnum()).thenReturn(NodeStatus.TypeEnum.MASTER);
-    mockMvc.perform(get("/alpha/api/v1/metrics"))
+    mockMvc.perform(get("/saga/api/v1/metrics"))
         .andExpect(status().isOk())
         .andExpect(
             MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

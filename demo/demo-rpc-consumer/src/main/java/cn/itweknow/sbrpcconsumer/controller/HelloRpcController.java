@@ -3,6 +3,8 @@ package cn.itweknow.sbrpcconsumer.controller;
 import cn.ds.transaction.framework.annotations.SagaStart;
 import cn.itweknow.sbrpcapi.service.HelloRpcService;
 import cn.itweknow.sbrpccorestarter.anno.RpcConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/rpc")
 public class HelloRpcController {
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
 
     @RpcConsumer(providerName = "provider")
@@ -61,17 +64,25 @@ public class HelloRpcController {
         }
     }
 
-    //2子事务，成功场景
-    @SagaStart
-    @GetMapping("/demo2normal")
-    public String h2(@RequestParam String msg) {
-        System.out.println("请求h2 start");
-        long start = System.currentTimeMillis();
-        String ret = "";
+
+    /**
+     * 成功场景:分布式事务包含2个子事务，各子事务均执行成功
+     * @param msg 入参
+     * @return 响应
+     */
+    @SagaStart //定义分布式事务开始与自动结束
+    @GetMapping("/test2TransactionSucc")
+    public String t2succ(@RequestParam String msg) {
+        logger.info("测试成功场景，2个子事务 start");
         try {
-            ret = helloRpcService.sayHi(msg);
-            ret = helloRpcService.sayHello(msg,false);
-            System.out.println("请求耗时:" + (System.currentTimeMillis() - start));
+            long start = System.currentTimeMillis();
+            logger.info("子事务1 start");
+            helloRpcService.sayHi(msg);
+            logger.info("子事务1 end");
+            logger.info("子事务2 start");
+            String ret = helloRpcService.sayHello(msg,false);//false不抛异常
+            logger.info("子事务2 end");
+            logger.info("事务耗时:" + (System.currentTimeMillis() - start));
             return ret;
         }catch (Exception e){
             e.printStackTrace();
@@ -79,20 +90,28 @@ public class HelloRpcController {
         }
     }
 
-    //2子事务，第2子处事抛异常
+    /**
+     * 异常场景:分布式事务包含2个子事务，第2子处事抛异常，执行事务回滚补偿
+     * @param msg 入参
+     * @return 响应
+     */
     @SagaStart
-    @GetMapping("/demo2exception")
-    public String h2ex(@RequestParam String msg) {
-        System.out.println("请求h2 start");
-        long start = System.currentTimeMillis();
-        String ret = "";
+    @GetMapping("/test2TransactionError")
+    public String t2err(@RequestParam String msg) {
+        logger.info("测试异常场景，2个子事务 start");
+
         try {
-            ret = helloRpcService.sayHi(msg);
-            ret = helloRpcService.sayHello(msg,true);
-            System.out.println("请求耗时:" + (System.currentTimeMillis() - start));
+            long start = System.currentTimeMillis();
+            logger.info("子事务1 start");
+            helloRpcService.sayHi(msg);
+            logger.info("子事务1 end");
+            logger.info("子事务2 start");
+            String ret = helloRpcService.sayHello(msg,true);//true不抛异常
+            logger.info("子事务2 end");
+            logger.info("事务耗时:" + (System.currentTimeMillis() - start));
             return ret;
         }catch (Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return "error";
         }
     }

@@ -81,75 +81,12 @@
 
 
 
-    <!--<dependency>-->
-      <!--<groupId>org.apache.servicecomb.pack</groupId>-->
-      <!--<artifactId>alpha-ui</artifactId>-->
-    <!--</dependency>-->
-
-
-    <!--<dependency>-->
-      <!--<groupId>org.apache.servicecomb.pack</groupId>-->
-      <!--<artifactId>alpha-spring-cloud-starter-consul</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.apache.servicecomb.pack</groupId>-->
-      <!--<artifactId>alpha-spring-cloud-starter-zookeeper</artifactId>-->
-      <!--<exclusions>-->
-        <!--<exclusion>-->
-          <!--<artifactId>slf4j-log4j12</artifactId>-->
-          <!--<groupId>org.slf4j</groupId>-->
-        <!--</exclusion>-->
-      <!--</exclusions>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.apache.servicecomb.pack</groupId>-->
-      <!--<artifactId>alpha-spring-cloud-starter-nacos</artifactId>-->
-    <!--</dependency>-->
-
-
 
 
 
 
 
     <!--  !!!!!!!!!!!!!!!  -->
-
-    <!--<dependency>-->
-      <!--<groupId>org.springframework.boot</groupId>-->
-      <!--<artifactId>spring-boot-starter</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.springframework.boot</groupId>-->
-      <!--<artifactId>spring-boot-starter-aop</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.springframework.boot</groupId>-->
-      <!--<artifactId>spring-boot-starter-jdbc</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>javax.transaction</groupId>-->
-      <!--<artifactId>javax.transaction-api</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.springframework.data</groupId>-->
-      <!--<artifactId>spring-data-jpa</artifactId>-->
-      <!--<exclusions>-->
-        <!--<exclusion>-->
-          <!--<groupId>org.aspectj</groupId>-->
-          <!--<artifactId>aspectjrt</artifactId>-->
-        <!--</exclusion>-->
-      <!--</exclusions>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.springframework</groupId>-->
-      <!--<artifactId>spring-aspects</artifactId>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-    <!--<groupId>org.eclipse.persistence</groupId>-->
-    <!--<artifactId>org.eclipse.persistence.jpa</artifactId>-->
-    <!--<version>2.7.1</version>-->
-    <!--</dependency>-->
 
 
 
@@ -170,28 +107,18 @@
       <version>2.1.6.RELEASE</version>
     </dependency>
 
+    <!-- eclipse.persistence以支持 -->
+    <!--<dependency>-->
+    <!--<groupId>org.eclipse.persistence</groupId>-->
+    <!--<artifactId>org.eclipse.persistence.jpa</artifactId>-->
+    <!--<version>2.7.1</version>-->
+    <!--</dependency>-->
+
 
     <!--  !!!!!!!!!!!!!!!  -->
 
 
 
-
-
-    <!--<dependency>-->
-      <!--<groupId>org.springframework.boot</groupId>-->
-      <!--<artifactId>spring-boot-starter-data-redis</artifactId>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>org.springframework.boot</groupId>-->
-      <!--<artifactId>spring-boot-starter-data-redis</artifactId>-->
-      <!--<exclusions>-->
-        <!--<exclusion>-->
-          <!--<groupId>org.springframework.boot</groupId>-->
-          <!--<artifactId>spring-boot-starter-logging</artifactId>-->
-        <!--</exclusion>-->
-      <!--</exclusions>-->
-    <!--</dependency>-->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -296,7 +223,7 @@
 
 
     <plugins>
-      <!-- TODO need to clean up the states of AlphaServer -->
+      <!-- TODO need to clean up the states of SagaServer -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -345,36 +272,7 @@
         </plugins>
       </build>
     </profile>
-    <!--<profile>-->
-      <!--<id>spring-cloud-eureka</id>-->
-      <!--&lt;!&ndash; Specify the alpha spring boot starter with the profile&ndash;&gt;-->
-      <!--<dependencies>-->
-        <!--<dependency>-->
-          <!--<groupId>org.apache.servicecomb.pack</groupId>-->
-          <!--<artifactId>alpha-spring-cloud-starter-eureka</artifactId>-->
-        <!--</dependency>-->
-      <!--</dependencies>-->
-    <!--</profile>-->
-    <!--<profile>-->
-      <!--<id>spring-cloud-zookeeper</id>-->
-      <!--&lt;!&ndash; Specify the alpha spring boot starter with the profile&ndash;&gt;-->
-      <!--<dependencies>-->
-        <!--<dependency>-->
-          <!--<groupId>org.apache.servicecomb.pack</groupId>-->
-          <!--<artifactId>alpha-spring-cloud-starter-zookeeper</artifactId>-->
-        <!--</dependency>-->
-      <!--</dependencies>-->
-    <!--</profile>-->
-    <!--<profile>-->
-      <!--<id>spring-cloud-nacos</id>-->
-      <!--&lt;!&ndash; Specify the alpha spring boot starter with the profile&ndash;&gt;-->
-      <!--<dependencies>-->
-        <!--<dependency>-->
-          <!--<groupId>org.apache.servicecomb.pack</groupId>-->
-          <!--<artifactId>alpha-spring-cloud-starter-nacos</artifactId>-->
-        <!--</dependency>-->
-      <!--</dependencies>-->
-    <!--</profile>-->
+
 
     <profile>
       <id>mysql</id>

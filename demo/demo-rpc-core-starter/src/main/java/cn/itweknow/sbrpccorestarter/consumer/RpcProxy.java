@@ -1,6 +1,7 @@
 package cn.itweknow.sbrpccorestarter.consumer;
 
 
+import cn.itweknow.sbrpccorestarter.interceptor.RpcRequestInterceptorProcessor;
 import cn.itweknow.sbrpccorestarter.model.RpcRequest;
 import cn.itweknow.sbrpccorestarter.model.RpcResponse;
 import org.slf4j.Logger;
@@ -16,7 +17,6 @@ import java.util.UUID;
  * @date 2020/12/26 17:11
  * @description
  */
-//@Component
 public class RpcProxy {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcProxy.class);
@@ -24,6 +24,9 @@ public class RpcProxy {
 
     @Autowired
     private RpcInvoker rpcInvoker;
+
+    @Autowired
+    private RpcRequestInterceptorProcessor rpcRequestInterceptorProcessor;
 
     @SuppressWarnings("unchecked")
     public <T> T create(Class<?> interfaceClass, String providerName) {
@@ -50,14 +53,19 @@ public class RpcProxy {
 
                     try {
                         //logger.info("发起rpc调用");
+                        rpcRequestInterceptorProcessor.preIntercept(providerName, request);
+
                         RpcResponse response = rpcInvoker.invoke(providerName, request);
+
+                        rpcRequestInterceptorProcessor.postIntercept(providerName, request, response);
+
                         if (response.isError()) {
                             throw response.getError();
                         } else {
                             return response.getResult();
                         }
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        logger.error("Rpc invoke error:{}",e.getMessage(), e);
                         throw e;
                     }
                 });

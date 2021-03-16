@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/alpha/api/v1")
+@RequestMapping("/saga/api/v1")
 public class APIv1Controller {
 
   @Autowired

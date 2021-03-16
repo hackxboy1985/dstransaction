@@ -12,22 +12,29 @@ import org.springframework.stereotype.Component;
 public class APIv1Impl implements APIv1 {
 
   @Autowired
-  ServerMetricsEndpoint alphaMetricsEndpoint;
+  ServerMetricsEndpoint serverMetricsEndpoint;
 
 //  @Autowired(required = false)
 //  TransactionRepository transactionRepository;
 
   public ServerMetrics getMetrics() {
-    ServerMetrics alphaMetrics = new ServerMetrics();
-    alphaMetrics.setMetrics(alphaMetricsEndpoint.getMetrics());
-    alphaMetrics.setNodeType(alphaMetricsEndpoint.getNodeType());
-    return alphaMetrics;
+    ServerMetrics serverMetrics = new ServerMetrics();
+    serverMetrics.setMetrics(serverMetricsEndpoint.getMetrics());
+    serverMetrics.setNodeType(serverMetricsEndpoint.getNodeType());
+    return serverMetrics;
   }
 
   @Override
   public Map<String, Long> getTransactionStatistics() {
     return null;
   }
+
+//  public GlobalTransaction getTransactionByGlobalTxId(String globalTxId)
+//      throws Exception {
+//    GlobalTransaction globalTransaction = transactionRepository
+//        .getGlobalTransactionByGlobalTxId(globalTxId);
+//    return globalTransaction;
+//  }
 
 //  public GlobalTransaction getTransactionByGlobalTxId(String globalTxId)
 //      throws Exception {

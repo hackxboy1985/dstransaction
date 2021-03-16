@@ -8,6 +8,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -39,8 +40,13 @@ public class RpcProviderHandler {
             rpcResponse.setResult(result);
             if (rpcResponseInterceptorProcessor != null)
                 rpcResponseInterceptorProcessor.postIntercept(request.getClassName(),request,rpcResponse);
+
+
+        } catch (InvocationTargetException e) {
+            //logger.info("RpcStarter::Provider::server handle request:{} , error:{}", request,e.getMessage(),e);
+            rpcResponse.setError(e.getTargetException());
+            rpcResponse.setMsg(e.getMessage());
         } catch (Exception e) {
-            logger.info("RpcStarter::Provider::server handle request:{} , error:{}", request,e.getMessage(),e);
             rpcResponse.setError(e);
             rpcResponse.setMsg(e.getMessage());
         } finally {

@@ -8,11 +8,16 @@ import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.context.SagaContext;
 import cn.ds.transaction.framework.*;
 import cn.ds.transaction.framework.exception.SagaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * saga注解开始处理器
  */
 public class SagaStartAnnotationProcessor {
+
+  private static final Logger LOG = LoggerFactory.getLogger(SagaStartAnnotationProcessor.class);
+
 
   private final SagaContext sagaContext;
   private final SagaMessageSender sender;
@@ -41,7 +46,8 @@ public class SagaStartAnnotationProcessor {
         .send(new SagaEndedEvent(sagaContext.globalTxId(), sagaContext.localTxId()));
     //TODO we may know if the transaction is aborted from fsm SagaSvr backend
     if (response.aborted()) {
-      throw new SagaException("transaction " + parentTxId + " is aborted");
+      LOG.info("Saga-Transaction:: transaction {} is aborted", parentTxId);
+//      throw new SagaException("transaction " + parentTxId + " is aborted");
     }
   }
 

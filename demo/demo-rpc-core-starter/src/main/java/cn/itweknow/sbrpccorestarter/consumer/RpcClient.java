@@ -7,10 +7,13 @@ import cn.itweknow.sbrpccorestarter.model.ProviderInfo;
 import cn.itweknow.sbrpccorestarter.model.RpcRequest;
 import cn.itweknow.sbrpccorestarter.model.RpcResponse;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +59,7 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline()
+//                                    .addFirst(new DelimiterBasedFrameDecoder(8192, Unpooled.copiedBuffer("\r\n".getBytes())))
                                     .addLast(new RpcEncoder(RpcRequest.class))
                                     .addLast(new RpcDecoder(RpcResponse.class))
                                     .addLast(RpcClient.this);

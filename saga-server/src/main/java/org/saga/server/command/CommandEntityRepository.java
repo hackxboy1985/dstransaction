@@ -44,7 +44,7 @@ public interface CommandEntityRepository extends CrudRepository<Command, Long> {
   List<Command> findByGlobalTxIdAndStatus(String globalTxId, String status);
 
   // TODO: 2018/1/18 we assumed compensation will never fail. if all service instances are not reachable, we have to set up retry mechanism for pending commands
-//  @Lock(LockModeType.OPTIMISTIC)//使用hibernate无法支持,要使用可换成eclipselink https://blog.csdn.net/weixin_41751625/article/details/107481271
+//  @Lock(LockModeType.OPTIMISTIC)//使用hibernate无法支持nativeQuery下的lock,要使用可换成eclipselink https://blog.csdn.net/weixin_41751625/article/details/107481271
   @Query(value = "SELECT * FROM Command AS c "
       + "WHERE c.eventId IN ("
       + " SELECT MAX(c1.eventId) FROM Command AS c1 "

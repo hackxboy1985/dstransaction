@@ -13,7 +13,7 @@ public class RpcInvoker {
 
     private ServiceDiscovery serviceDiscovery;
 
-    private RpcRequestInterceptorProcessor rpcRequestInterceptorProcessor;
+//    private RpcRequestInterceptorProcessor rpcRequestInterceptorProcessor;
 
     public RpcResponse invoke(String providerName, RpcRequest request){
         // 获取一个服务提供者。
@@ -29,18 +29,19 @@ public class RpcInvoker {
         String host = addrInfo[0];
         int port = Integer.parseInt(addrInfo[1]);
 
-        rpcRequestInterceptorProcessor.preIntercept(providerName,request);
+//        rpcRequestInterceptorProcessor.preIntercept(providerName,request);
 
         // 发送调用消息。
-        RpcClient rpcClient = new RpcClient(host, port);
-        RpcResponse response = rpcClient.send(providerInfo,request,true);
+//        RpcClient rpcClient = new RpcClient(host, port);
+//        RpcResponse response = rpcClient.send(providerInfo,request,true);
+        RpcResponse response = RpcClientPool.getRpcClientPool().send(providerInfo,request);
 
-        rpcRequestInterceptorProcessor.postIntercept(providerName,request,response);
+//        rpcRequestInterceptorProcessor.postIntercept(providerName,request,response);
         return response;
     }
 
     public void setServiceDiscovery(ServiceDiscovery serviceDiscovery){
         this.serviceDiscovery = serviceDiscovery;
     }
-    public void setRpcRequestInterceptorProcessor(RpcRequestInterceptorProcessor requestInterceptorProcessor){this.rpcRequestInterceptorProcessor = requestInterceptorProcessor;}
+//    public void setRpcRequestInterceptorProcessor(RpcRequestInterceptorProcessor requestInterceptorProcessor){this.rpcRequestInterceptorProcessor = requestInterceptorProcessor;}
 }

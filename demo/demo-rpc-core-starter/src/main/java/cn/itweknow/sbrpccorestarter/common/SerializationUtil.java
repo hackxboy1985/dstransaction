@@ -74,6 +74,7 @@ public class SerializationUtil {
             ProtostuffIOUtil.mergeFrom(data, message, schema);
             return message;
         } catch (Exception e) {
+            System.out.println("反序列化异常:"+ e.getMessage());
             throw new IllegalStateException(e.getMessage(), e);
         }
     }

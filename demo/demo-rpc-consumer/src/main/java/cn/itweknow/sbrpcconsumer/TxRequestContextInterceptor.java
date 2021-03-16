@@ -15,7 +15,7 @@ import static cn.ds.transaction.framework.context.SagaContext.GLOBAL_TX_ID_KEY;
 import static cn.ds.transaction.framework.context.SagaContext.LOCAL_TX_ID_KEY;
 
 @Component
-public class TxContextInterceptor implements RpcInvokeInterceptor<RpcRequest,RpcResponse> {
+public class TxRequestContextInterceptor implements RpcInvokeInterceptor<RpcRequest,RpcResponse> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 

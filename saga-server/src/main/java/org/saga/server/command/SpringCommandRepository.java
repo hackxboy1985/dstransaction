@@ -32,7 +32,7 @@ public class SpringCommandRepository implements CommandRepository {
 
   @Override
   public void saveCompensationCommands(String globalTxId) {
-    //根据存在匹配的结束事件，但不存在补偿事件的条件查找开始事件TxStartedEvent
+    //根据存在结束事件，但不存在补偿事件的条件查找出其开始事件TxStartedEvent
     List<TxEvent> events = eventRepository
         .findStartedEventsWithMatchingEndedButNotCompensatedEvents(globalTxId);
 

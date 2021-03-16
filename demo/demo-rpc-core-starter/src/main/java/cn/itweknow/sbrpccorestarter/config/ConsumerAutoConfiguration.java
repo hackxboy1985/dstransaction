@@ -46,7 +46,7 @@ public class ConsumerAutoConfiguration {
     public RpcInvoker rpcInvoker(ServiceDiscovery serviceDiscovery,RpcRequestInterceptorProcessor requestInterceptorProcessor) {
         RpcInvoker rpcInvoker = new RpcInvoker();
         rpcInvoker.setServiceDiscovery(serviceDiscovery);
-        rpcInvoker.setRpcRequestInterceptorProcessor(requestInterceptorProcessor);
+//        rpcInvoker.setRpcRequestInterceptorProcessor(requestInterceptorProcessor);
         return rpcInvoker;
     }
 
