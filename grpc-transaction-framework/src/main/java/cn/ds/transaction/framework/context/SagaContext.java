@@ -5,8 +5,8 @@ package cn.ds.transaction.framework.context;
  * SagaContext是事务线程上下文，用于串起整个调用链
  */
 public class SagaContext {
-  public static final String GLOBAL_TX_ID_KEY = "X-Pack-Global-Transaction-Id";
-  public static final String LOCAL_TX_ID_KEY = "X-Pack-Local-Transaction-Id";
+  public static final String GLOBAL_TX_ID_KEY = "X-SAGA-Global-Transaction-Id";
+  public static final String LOCAL_TX_ID_KEY = "X-SAGA-Local-Transaction-Id";
 
   private final ThreadLocal<String> globalTxId = new InheritableThreadLocal();
   private final ThreadLocal<String> localTxId = new InheritableThreadLocal();

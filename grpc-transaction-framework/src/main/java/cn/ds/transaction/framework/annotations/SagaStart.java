@@ -1,5 +1,3 @@
-
-
 package cn.ds.transaction.framework.annotations;
 
 import java.lang.annotation.Retention;

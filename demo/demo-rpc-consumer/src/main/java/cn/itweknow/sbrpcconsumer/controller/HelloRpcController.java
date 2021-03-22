@@ -115,4 +115,59 @@ public class HelloRpcController {
             return "error";
         }
     }
+
+
+    /**
+     * 预订订单:分布式事务包含2个子事务(预订飞机、预订酒店)
+     * @param user 用户名
+     * @param peopleNum 人数
+     * @return 响应
+     */
+    @SagaStart
+    @GetMapping("/order")
+    public String order(@RequestParam String user,@RequestParam int peopleNum) {
+        logger.info("预订订单场景，2个子事务");
+        long start = System.currentTimeMillis();
+        try {
+            logger.info("子事务1-预订飞机 开始");
+            helloRpcService.planeBooking(user);
+            logger.info("子事务1-预订飞机 结束");
+
+            logger.info("子事务2-预订酒店 开始");
+            String ret = helloRpcService.hotelBooking(user,peopleNum);
+            logger.info("子事务2-预订酒店 结束");
+            logger.info("预订订单成功-事务耗时:" + (System.currentTimeMillis() - start));
+            return user+"预订成功";
+        }catch (Exception e){
+            logger.info("预订订单异常-事务耗时:" + (System.currentTimeMillis() - start));
+            return user+"预订失败:"+e.getMessage();
+        }
+    }
+
+//    /**
+//     * 预订异常场景:分布式事务包含2个子事务(预订飞机、预订酒店)，预订酒店事务抛异常，执行事务回滚补偿
+//     * @param user 入参用户
+//     * @return 响应
+//     */
+//    @SagaStart
+//    @GetMapping("/orderErr")
+//    public String orderErr(@RequestParam String user) {
+//        logger.info("测试预订订单失败场景，2个子事务 start");
+//        try {
+//            long start = System.currentTimeMillis();
+//            logger.info("子事务1-预订飞机 开始");
+//            helloRpcService.planeBooking(user);
+//            logger.info("子事务1-预订飞机 结束");
+//
+//            logger.info("子事务2-预订酒店 start");
+//            String ret = helloRpcService.hotelBooking(user,2);
+//            logger.info("子事务2-预订酒店 结束");
+//            logger.info("事务耗时:" + (System.currentTimeMillis() - start));
+//            return ret;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return "error";
+//        }
+//    }
+
 }

@@ -15,4 +15,17 @@ public interface HelloRpcService {
 
     String sayHello(String msg, boolean ex);
 
+    /**
+     * 飞机预订
+     * @param user
+     * @return
+     */
+    String planeBooking(String user);
+
+    /**
+     * 酒店预订成功
+     * @param user
+     * @return
+     */
+    String hotelBooking(String user, int peopleNum);
 }
