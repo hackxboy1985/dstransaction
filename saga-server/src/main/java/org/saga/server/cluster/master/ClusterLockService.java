@@ -1,5 +1,3 @@
-
-
 package org.saga.server.cluster.master;
 
 import com.google.common.eventbus.EventBus;
@@ -34,17 +32,17 @@ import java.util.Optional;
  * default based on database master_lock table implementation
  * <p>
  * Set true to enable default value false
- * alpha.cluster.master.enabled=true
+ * saga.cluster.master.enabled=true
  * <p>
  * Implementation type, default jdbc
- * alpha.cluster.master.type=jdbc
+ * saga.cluster.master.type=jdbc
  * <p>
  * Lock timeout, default value 5000 millisecond
- * alpha.cluster.master.expire=5000
+ * saga.cluster.master.expire=5000
  */
 
 @Component
-@ConditionalOnProperty(name = "alpha.cluster.master.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "saga.cluster.master.enabled", havingValue = "true")
 @EnableScheduling
 @AutoConfigureAfter(ServerConfig.class)
 public class ClusterLockService implements ApplicationListener<ApplicationReadyEvent> {
@@ -63,13 +61,13 @@ public class ClusterLockService implements ApplicationListener<ApplicationReadyE
 
   private Optional<Lock> locker;
 
-  @Value("[${alpha.server.host}]:${alpha.server.port}")
+  @Value("[${saga.server.host}]:${saga.server.port}")
   private String instanceId;
 
-  @Value("${spring.application.name:servicecomb-alpha-server}")
+  @Value("${spring.application.name:servicecomb-saga-server}")
   private String serviceName;
 
-  @Value("${alpha.cluster.master.expire:5000}")
+  @Value("${saga.cluster.master.expire:5000}")
   private int expire;
 
   @Autowired
@@ -79,7 +77,7 @@ public class ClusterLockService implements ApplicationListener<ApplicationReadyE
   NodeStatus nodeStatus;
 
   @Autowired
-  @Qualifier("alphaEventBus")
+  @Qualifier("sagaEventBus")
   EventBus eventBus;
 
   @PostConstruct

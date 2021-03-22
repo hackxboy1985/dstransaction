@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
-@ConditionalOnProperty(name = "alpha.cluster.master.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "saga.cluster.master.enabled", havingValue = "true")
 public class LockProviderJdbcConfiguration {
 
   @Bean
@@ -20,7 +20,7 @@ public class LockProviderJdbcConfiguration {
 
   @Primary
   @Bean
-  @ConditionalOnProperty(name = "alpha.cluster.master.type", havingValue = "jdbc", matchIfMissing = true)
+  @ConditionalOnProperty(name = "saga.cluster.master.type", havingValue = "jdbc", matchIfMissing = true)
   public LockProvider lockProvider(MasterLockRepository electionRepo) {
     return new JdbcLockProvider(electionRepo);
   }

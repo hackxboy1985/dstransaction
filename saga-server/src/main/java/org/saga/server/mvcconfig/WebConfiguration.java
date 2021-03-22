@@ -24,7 +24,7 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ConditionalOnProperty(value = {"alpha.rest.cors.enabled"})
+@ConditionalOnProperty(value = {"saga.rest.cors.enabled"})
 public class WebConfiguration implements WebMvcConfigurer {
 
   /**

@@ -12,7 +12,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Date;
 import java.util.Optional;
 
-@ConditionalOnProperty(name = "alpha.cluster.master.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "saga.cluster.master.enabled", havingValue = "true")
 public class SpringMasterLockRepository implements MasterLockRepository {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

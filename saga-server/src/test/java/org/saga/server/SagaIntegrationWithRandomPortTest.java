@@ -52,12 +52,12 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ServerApplication.class, ServerConfig.class},
     properties = {
-        "alpha.server.host=0.0.0.0",
-        "alpha.server.port=0",
-        "alpha.server.initialPort=9000",
-        "alpha.server.portAutoIncrement=true",
-        "alpha.server.portCount=100",
-        "alpha.event.pollingInterval=1",
+        "saga.server.host=0.0.0.0",
+        "saga.server.port=0",
+        "saga.server.initialPort=9000",
+        "saga.server.portAutoIncrement=true",
+        "saga.server.portCount=100",
+        "saga.event.pollingInterval=1",
         "spring.main.allow-bean-definition-overriding=true"
        })
 public class SagaIntegrationWithRandomPortTest {

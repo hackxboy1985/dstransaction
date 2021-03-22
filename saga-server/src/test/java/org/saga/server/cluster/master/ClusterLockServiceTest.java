@@ -29,21 +29,21 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {ServerApplication.class, ServerConfig.class},
     properties = {
-        "alpha.cluster.master.enabled=true",
-        "alpha.server.host=0.0.0.0",
-        "alpha.server.port=8090",
-        "alpha.event.pollingInterval=1",
+        "saga.cluster.master.enabled=true",
+        "saga.server.host=0.0.0.0",
+        "saga.server.port=8090",
+        "saga.event.pollingInterval=1",
         "spring.main.allow-bean-definition-overriding=true"
     })
 public class ClusterLockServiceTest {
 
-  @Value("[${alpha.server.host}]:${alpha.server.port}")
+  @Value("[${saga.server.host}]:${saga.server.port}")
   private String instanceId;
 
-  @Value("${spring.application.name:servicecomb-alpha-server}")
+  @Value("${spring.application.name:servicecomb-saga-server}")
   private String serviceName;
 
-  @Value("${alpha.cluster.master.expire:5000}")
+  @Value("${saga.cluster.master.expire:5000}")
   private int expire;
 
   @Autowired

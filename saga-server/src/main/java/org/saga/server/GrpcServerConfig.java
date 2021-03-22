@@ -8,39 +8,39 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GrpcServerConfig {
 
-  private static final int DEFAULT_ALPHA_SERVER_PORT = 8080;
+  private static final int DEFAULT_SAGA_SERVER_PORT = 8080;
 
-  @Value("${alpha.server.host:0.0.0.0}")
+  @Value("${saga.server.host:0.0.0.0}")
   private String host;
 
-  @Value("${alpha.server.port:"+DEFAULT_ALPHA_SERVER_PORT+"}")
+  @Value("${saga.server.port:"+ DEFAULT_SAGA_SERVER_PORT +"}")
   private int port;
 
-  @Value("${alpha.server.initialPort:"+DEFAULT_ALPHA_SERVER_PORT+"}")
+  @Value("${saga.server.initialPort:"+DEFAULT_SAGA_SERVER_PORT+"}")
   private int initialPort;
 
-  @Value("${alpha.server.portAutoIncrement:true}")
+  @Value("${saga.server.portAutoIncrement:true}")
   private boolean portAutoIncrement;
 
-  @Value("${alpha.server.portCount:100}")
+  @Value("${saga.server.portCount:100}")
   private int portCount;
 
-  @Value("${alpha.server.ssl.enable:false}")
+  @Value("${saga.server.ssl.enable:false}")
   private boolean sslEnable;
 
-  @Value("${alpha.server.ssl.cert:server.crt}")
+  @Value("${saga.server.ssl.cert:server.crt}")
   private String cert;
 
-  @Value("${alpha.server.ssl.key:server.pem}")
+  @Value("${saga.server.ssl.key:server.pem}")
   private String key;
 
-  @Value("${alpha.server.ssl.mutualAuth:false}")
+  @Value("${saga.server.ssl.mutualAuth:false}")
   private boolean mutualAuth;
 
-  @Value("${alpha.server.ssl.clientCert:client.crt}")
+  @Value("${saga.server.ssl.clientCert:client.crt}")
   private String clientCert;
 
-  @Value("${alpha.feature.nativetransport:false}")
+  @Value("${saga.feature.nativetransport:false}")
   private boolean nativeTransport;
 
   public String getHost() {

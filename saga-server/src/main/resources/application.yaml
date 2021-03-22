@@ -2,7 +2,7 @@ server:
   port: 8090
   host: 0.0.0.0
 
-alpha:
+saga:
   server:
     host: ${server.host}
     port: 8080
@@ -26,15 +26,15 @@ spring:
 #        serviceName: {spring.application.name}
 #        healthCheckPath: /actuator/health
 #        healthCheckInterval: 10s
-#        instanceId: ${spring.application.name}-${alpha.server.host}-${random.value}
-#        tags: saga-server-host=${alpha.server.host},saga-server-port=${alpha.server.port}
+#        instanceId: ${spring.application.name}-${saga.server.host}-${random.value}
+#        tags: saga-server-host=${saga.server.host},saga-server-port=${saga.server.port}
 
 eureka:
   client:
     enabled: false
   instance:
     metadataMap:
-      saga-server: ${alpha.server.host}:${alpha.server.port}
+      saga-server: ${saga.server.host}:${saga.server.port}
 
 
 
@@ -52,7 +52,7 @@ eureka:
 ---
 spring:
   profiles: ssl
-alpha:
+saga:
   server:
     ssl:
       enable: true

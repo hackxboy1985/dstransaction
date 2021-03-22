@@ -21,9 +21,9 @@ import java.util.Arrays;
 @ActiveProfiles("ssl")
 @SpringBootTest(classes = {ServerApplication.class, ServerConfig.class},
     properties = {
-        "alpha.server.host=0.0.0.0",
-        "alpha.server.port=8092",
-        "alpha.event.pollingInterval=1",
+        "saga.server.host=0.0.0.0",
+        "saga.server.port=8092",
+        "saga.event.pollingInterval=1",
         "spring.main.allow-bean-definition-overriding=true"
     })
 public class SagaIntegrationWithSSLTest extends SagaIntegrationTest {

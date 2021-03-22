@@ -51,9 +51,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ServerApplication.class, ServerConfig.class},
     properties = {
-        "alpha.server.host=0.0.0.0",
-        "alpha.server.port=8090",
-        "alpha.event.pollingInterval=1",
+        "saga.server.host=0.0.0.0",
+        "saga.server.port=8090",
+        "saga.event.pollingInterval=1",
         "spring.main.allow-bean-definition-overriding=true"
        })
 public class SagaIntegrationTest {

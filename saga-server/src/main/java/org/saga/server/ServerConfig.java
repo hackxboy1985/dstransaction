@@ -52,13 +52,13 @@ public class ServerConfig {
   private final BlockingQueue<Runnable> pendingCompensations = new LinkedBlockingQueue<>();
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-  @Value("${alpha.compensation.retry.delay:3000}")
+  @Value("${saga.compensation.retry.delay:3000}")
   private int delay;
 
-  @Value("${alpha.tx.timeout-seconds:600}")
+  @Value("${saga.tx.timeout-seconds:600}")
   private int globalTxTimeoutSeconds;
 
-  @Value("${alpha.cluster.master.enabled:false}")
+  @Value("${saga.cluster.master.enabled:false}")
   private boolean masterEnabled;
 
   @Autowired
@@ -68,9 +68,9 @@ public class ServerConfig {
   ApplicationEventPublisher applicationEventPublisher;
 
 
-  @Bean("alphaEventBus")
-  EventBus alphaEventBus() {
-    return new EventBus("alphaEventBus");
+  @Bean("sagaEventBus")
+  EventBus sagaEventBus() {
+    return new EventBus("sagaEventBus");
   }
 
   @Bean
@@ -114,8 +114,8 @@ public class ServerConfig {
 
   @Bean
   TxConsistentService txConsistentService(
-      @Value("${alpha.event.pollingInterval:500}") int eventPollingInterval,
-      @Value("${alpha.event.scanner.enabled:true}") boolean eventScannerEnabled,
+      @Value("${saga.event.pollingInterval:500}") int eventPollingInterval,
+      @Value("${saga.event.scanner.enabled:true}") boolean eventScannerEnabled,
       ScheduledExecutorService scheduler,
       TxEventRepository eventRepository,
       CommandRepository commandRepository,
@@ -133,7 +133,7 @@ public class ServerConfig {
   }
 
   /**
-   * 缺省使用此配置 当没有alpha.feature.akka.enabled配置时
+   * 缺省使用此配置 当没有saga.feature.akka.enabled配置时
    * @param serverConfig
    * @param txConsistentService
    * @param agentCallbacks
@@ -142,10 +142,10 @@ public class ServerConfig {
    * @throws IOException
    */
   @Bean()
-  @ConditionalOnProperty(name = "alpha.feature.akka.enabled", havingValue = "false", matchIfMissing = true)
+  @ConditionalOnProperty(name = "saga.feature.akka.enabled", havingValue = "false", matchIfMissing = true)
   ServerStartable serverStartable(GrpcServerConfig serverConfig, TxConsistentService txConsistentService,
       Map<String, Map<String, AgentCallback>> agentCallbacks,
-      @Qualifier("alphaEventBus") EventBus eventBus) throws IOException {
+      @Qualifier("sagaEventBus") EventBus eventBus) throws IOException {
     ServerMeta serverMeta = ServerMeta.newBuilder()
         .putMeta(SagaServerMetaKeys.AkkaEnabled.name(), String.valueOf(false)).build();
     List<BindableService> bindableServices = new ArrayList();
@@ -154,7 +154,7 @@ public class ServerConfig {
     ServerStartable bootstrap = new GrpcStartable(serverConfig, eventBus,
         bindableServices.toArray(new BindableService[0]));
     new Thread(bootstrap::start).start();
-    LOG.info("alpha.feature.akka.enabled=false, starting the [Saga Service]");
+    LOG.info("saga.feature.akka.enabled=false, starting the [Saga Service]");
     return bootstrap;
   }
 
