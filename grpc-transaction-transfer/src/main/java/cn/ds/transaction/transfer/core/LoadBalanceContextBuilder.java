@@ -1,5 +1,3 @@
-
-
 package cn.ds.transaction.transfer.core;
 
 import cn.ds.transaction.framework.context.ServiceConfig;
@@ -26,6 +24,9 @@ import cn.ds.transaction.transfer.saga.GrpcSagaClientMessageSender;
 import cn.ds.transaction.transfer.SagaSvrClusterConfig;
 import cn.ds.transaction.framework.interfaces.MessageSender;
 
+/**
+ * LoadBalanceContext的builder
+ */
 public class LoadBalanceContextBuilder {
 
   private final SagaSvrClusterConfig clusterConfig;

@@ -43,19 +43,4 @@ public class RpcAutoConfiguration {
 
 
 
-
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public RpcTransactionalManager rpcTransactionalManager(){
-//        RpcTransactionalManager rtm = new RpcTransactionalManager();
-//        return rtm;
-//    }
-
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public RpcRollbackAspect rpcRollbackAspect(){
-//        RpcRollbackAspect rra = new RpcRollbackAspect();
-//        return rra;
-//    }
-
 }

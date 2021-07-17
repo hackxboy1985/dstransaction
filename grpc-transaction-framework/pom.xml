@@ -55,6 +55,34 @@
       <!--<groupId>org.hamcrest</groupId>-->
       <!--<artifactId>hamcrest-all</artifactId>-->
     <!--</dependency>-->
+
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>3.2.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>objenesis</artifactId>
+          <groupId>org.objenesis</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito</artifactId>
+      <version>3.2.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- PowerMock Mockito2 API -->
+    <!--<dependency>-->
+      <!--　　<groupId>org.powermock</groupId>-->
+      <!--　　<artifactId>powermock-api-mockito2</artifactId>-->
+      <!--　　<version>2.0.0</version>-->
+      <!--　　<scope>test</scope>-->
+    <!--</dependency>-->
+
     <dependency>
       <groupId>com.github.seanyinx</groupId>
       <artifactId>unit-scaffolding</artifactId>

@@ -26,10 +26,7 @@ import java.lang.reflect.Field;
  * @description
  */
 @Configuration
-//@ConditionalOnClass(RpcConsumer.class)
 @ConditionalOnProperty(value = {"spring.rpc.server-name"}, matchIfMissing = true)
-//@ConditionalOnExpression("'${spring.rpc.server-name}' == null && '${spring.rpc.server-name}'.length() == 0 ? true : false ")
-//@ConditionalOnExpression("'${spring.rpc.server-name} != null ? false : true '")//没有rpc服务名时，才认为是consumer端，才初始化
 @EnableConfigurationProperties(RpcProperties.class)
 public class ConsumerAutoConfiguration {
 

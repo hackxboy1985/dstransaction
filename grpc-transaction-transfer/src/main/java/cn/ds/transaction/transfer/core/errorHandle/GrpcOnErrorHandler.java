@@ -30,6 +30,7 @@ public class GrpcOnErrorHandler {
    * @param messageSender
    */
   public void handle(MessageSender messageSender) {
+    //在PushBackReconnectRunnable阻塞
     final Runnable runnable = new PushBackReconnectRunnable(
         messageSender,
         senders,

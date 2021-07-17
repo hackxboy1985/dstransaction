@@ -2,8 +2,8 @@
 
 package cn.ds.transaction.transfer.core;
 
-import cn.ds.transaction.framework.TxEvent;
-import cn.ds.transaction.framework.interfaces.SagaMessageSender;
+//import cn.ds.transaction.framework.TxEvent;
+//import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
 import com.google.common.base.Optional;
 import io.grpc.ManagedChannel;
@@ -14,6 +14,10 @@ import cn.ds.transaction.framework.exception.SagaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/**
+ * 负载均衡算法进行消息发送
+ */
 public abstract class LoadBalanceSenderAdapter implements MessageSender {
 
   private final LoadBalanceContext loadContext;
@@ -50,22 +54,23 @@ public abstract class LoadBalanceSenderAdapter implements MessageSender {
     return Optional.fromNullable(response);
   }
 
-  public Optional<SagaSvrResponse> doGrpcSend2(TxEvent event) {
-    final SagaMessageSender messageSender = pickMessageSender();
-
-    SagaSvrResponse response = null;
-    try {
-      long startTime = System.nanoTime();
-      response =  messageSender.send(event);
-      loadContext.getSenders().put(messageSender, System.nanoTime() - startTime);
-    } catch (SagaException e) {
-      throw e;
-    } catch (Exception e) {
-      LOG.error("Saga-Transaction::Retry sending event {} due to failure", event, e);
-      loadContext.getSenders().put(messageSender, Long.MAX_VALUE);
-    }
-    return Optional.fromNullable(response);
-  }
+  //如使用此方法，则依赖于TxEvent与SagaMessageSender，而无法进行高度抽象，使用上面方法可实现真正抽象
+//  public Optional<SagaSvrResponse> doGrpcSend2(TxEvent event) {
+//    final SagaMessageSender messageSender = pickMessageSender();
+//
+//    SagaSvrResponse response = null;
+//    try {
+//      long startTime = System.nanoTime();
+//      response =  messageSender.send(event);
+//      loadContext.getSenders().put(messageSender, System.nanoTime() - startTime);
+//    } catch (SagaException e) {
+//      throw e;
+//    } catch (Exception e) {
+//      LOG.error("Saga-Transaction::Retry sending event {} due to failure", event, e);
+//      loadContext.getSenders().put(messageSender, Long.MAX_VALUE);
+//    }
+//    return Optional.fromNullable(response);
+//  }
 
   @Override
   public void onConnected() {
@@ -132,6 +137,7 @@ public abstract class LoadBalanceSenderAdapter implements MessageSender {
     return senderPicker;
   }
 
+  //仅用于测试
   public LoadBalanceContext getLoadContext() {
     return loadContext;
   }

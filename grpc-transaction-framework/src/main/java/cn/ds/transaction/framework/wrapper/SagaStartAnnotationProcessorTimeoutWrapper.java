@@ -64,8 +64,7 @@ public class SagaStartAnnotationProcessorTimeoutWrapper {
           LOG.info("Saga-Transaction::TimeoutProb interrupt fail");
           throw timeoutProb.getInterruptFailureException();
         } else if (isThreadInterruptException(throwable)) {
-          // We don't have to send an SagaAbortEvent
-          // Because the SagaActor state automatically change to suspended when timeout.
+          //TODO:中断不需要发送SagaAbortEvent事件，因为超时时，协调器会自动挂起
           throw new TransactionTimeoutException("Timeout interrupt", throwable);
         } else {
           // We don't need to handle the SagaException here

@@ -101,7 +101,7 @@ class GrpcTxEventEndpointImpl extends TxEventServiceImplBase {
 
   @Override
   public void onGetServerMeta(GrpcServiceConfig request, StreamObserver<ServerMeta> responseObserver){
-    LOG.info("GetServerMeta Request:: return {}",this.serverMeta);
+    //LOG.info("GetServerMeta Request:: return {}",this.serverMeta);
     responseObserver.onNext(this.serverMeta);
     responseObserver.onCompleted();
   }

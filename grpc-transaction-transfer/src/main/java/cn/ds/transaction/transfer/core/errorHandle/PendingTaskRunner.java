@@ -9,6 +9,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * 阻塞任务处理，其实就是对错误连接进行重连
+ */
 public class PendingTaskRunner {
 
   private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();

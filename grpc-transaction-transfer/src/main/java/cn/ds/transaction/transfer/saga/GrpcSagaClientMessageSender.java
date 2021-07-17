@@ -46,8 +46,9 @@ public class GrpcSagaClientMessageSender implements SagaMessageSender {
       MessageHandler handler,
       LoadBalanceContext loadContext) {
     this.target = address;
-    //TODO:连接服务器异步的双向流
+    //TODO:连接服务器异步的双向流，用于进行接收补偿消息，消息将会由GrpcCompensateStreamObserver接收处理
     this.asyncEventService = TxEventServiceGrpc.newStub(channel);
+    //TODO:连接服务器同步单向流，阻塞发送消息直到返回结果，用于事务日志发送
     this.blockingEventService = TxEventServiceGrpc.newBlockingStub(channel);
     this.serializer = serializer;
     this.compensateStreamObserver =

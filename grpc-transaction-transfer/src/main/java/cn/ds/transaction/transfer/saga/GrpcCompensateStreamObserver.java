@@ -32,6 +32,10 @@ class GrpcCompensateStreamObserver extends ReconnectStreamObserver<GrpcCompensat
   private final MessageDeserializer deserializer;
 
 
+  /**
+   * Grpc框架的StreamObserver类的实现，是双向流的回调方法
+   * @param command
+   */
   @Override
   public void onNext(GrpcCompensateCommand command) {
     LOG.info("Saga-Transaction::Compensate:Received compensate command, global tx id: {}, local tx id: {}, compensation method: {}",

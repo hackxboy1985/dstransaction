@@ -37,12 +37,12 @@ public class SagaLoadBalanceSender extends LoadBalanceSenderAdapter implements S
   }
 
 //  @Override
-  public SagaSvrResponse send2(TxEvent event) {
-    do {
-      Optional<SagaSvrResponse> response = doGrpcSend2(event);
-      if (response.isPresent()) return response.get();
-    } while (!Thread.currentThread().isInterrupted());
-
-    throw new SagaException("Saga-Transaction::Failed to send event " + event + " due to interruption");
-  }
+//  public SagaSvrResponse send2(TxEvent event) {
+//    do {
+//      Optional<SagaSvrResponse> response = doGrpcSend2(event);
+//      if (response.isPresent()) return response.get();
+//    } while (!Thread.currentThread().isInterrupted());
+//
+//    throw new SagaException("Saga-Transaction::Failed to send event " + event + " due to interruption");
+//  }
 }

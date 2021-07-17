@@ -20,12 +20,17 @@ import cn.ds.transaction.framework.SagaSvrResponse;
 import cn.ds.transaction.framework.enums.EventType;
 import cn.ds.transaction.framework.interfaces.SagaMessageSender;
 import cn.ds.transaction.framework.TxEvent;
+import cn.ds.transaction.framework.processor.SagaStartAnnotationProcessor;
 import cn.ds.transaction.grpc.protocol.ServerMeta;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+//import org.powermock.api.mockito.PowerMockito.mockStatic;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SagaStartAspectTest {
   private final List<TxEvent> messages = new ArrayList<>();
@@ -66,6 +71,8 @@ public class SagaStartAspectTest {
   @SuppressWarnings("unchecked")
   private final IdGenerator<String> idGenerator = Mockito.mock(IdGenerator.class);
   private final SagaStart sagaStart = Mockito.mock(SagaStart.class);
+  private static final Logger loggerMock = Mockito.mock(Logger.class);
+  private static final LoggerFactory loggerFactory = Mockito.mock(LoggerFactory.class);
 
   private SagaContext sagaContext;
   private SagaStartAspect aspect;
@@ -77,6 +84,11 @@ public class SagaStartAspectTest {
     when(methodSignature.getMethod()).thenReturn(this.getClass().getDeclaredMethod("doNothing"));
     // setup the default value of SagaStart
     when(sagaStart.autoClose()).thenReturn(true);
+
+//    Mockito.mock()
+//    mockStatic(LoggerFactory.class);
+
+    when(LoggerFactory.getLogger(SagaStartAnnotationProcessor.class)).thenReturn(loggerMock);
   }
 
   @Test

@@ -37,6 +37,7 @@ public class TransactionAspect extends TransactionContextHelper {
     this.context.verify();
     this.interceptor = new CompensableInterceptor(context, sender);
   }
+
   @Around("execution(@cn.ds.transaction.framework.annotations.Compensable * *(..)) && @annotation(compensable)")
   Object advise(ProceedingJoinPoint joinPoint, Compensable compensable) throws Throwable {
     Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
@@ -45,7 +46,6 @@ public class TransactionAspect extends TransactionContextHelper {
     if (transactionContext != null) {
       populateSagaContext(context, transactionContext);
     }
-    // SCB-1011 Need to check if the globalTxId transaction is null to avoid the message sending failure
     if (context.globalTxId() == null) {
       throw new SagaException("Cannot find the globalTxId from SagaContext. Please using @SagaStart to start a global transaction.");
     }
